@@ -1,4 +1,5 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+// 使用相对路径，让请求通过 Vite 代理到后端
+const API_BASE_URL = import.meta.env.VITE_API_URL || ''
 
 export interface Note {
   id: string
