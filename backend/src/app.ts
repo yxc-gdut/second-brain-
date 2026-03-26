@@ -9,6 +9,10 @@ import { tagsRouter } from './routes/tags'
 import { chatRouter } from './routes/chat'
 import { searchRouter } from './routes/search'
 
+// 加载环境变量
+import dotenv from 'dotenv'
+dotenv.config()
+
 const app = new Koa()
 const PORT = process.env.PORT || 3000
 
