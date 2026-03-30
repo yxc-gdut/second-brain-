@@ -7,18 +7,19 @@ const router = new Router({ prefix: '/api/ocr' })
 router.post('/preview', async (ctx) => {
   try {
     // 检查 OCR 服务是否可用
-    if (!ocrService.isOCRAvailable()) {
+    const available = await ocrService.isOCRAvailable()
+    if (!available) {
       ctx.status = 503
       ctx.body = {
         success: false,
         error: 'OCR 服务未配置',
-        message: '请设置 BAIDU_OCR_API_KEY 和 BAIDU_OCR_SECRET_KEY 环境变量'
+        message: '请安装 tesseract-ocr 和中文语言包：sudo apt-get install tesseract-ocr tesseract-ocr-chi-sim tesseract-ocr-chi-tra'
       }
       return
     }
 
     const { image, imageName = 'upload.jpg' } = ctx.request.body as any
-    
+
     if (!image) {
       ctx.status = 400
       ctx.body = {
@@ -57,10 +58,11 @@ router.post('/preview', async (ctx) => {
 
 // OCR 服务状态检查
 router.get('/status', async (ctx) => {
+  const available = await ocrService.isOCRAvailable()
   ctx.body = {
     success: true,
     data: {
-      available: ocrService.isOCRAvailable()
+      available
     }
   }
 })

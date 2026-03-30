@@ -1,10 +1,9 @@
-import axios from 'axios'
+import { exec } from 'child_process'
+import { promisify } from 'util'
 import fs from 'fs/promises'
 import path from 'path'
 
-// 百度 OCR 配置（需要用户填写）
-const BAIDU_OCR_API_KEY = process.env.BAIDU_OCR_API_KEY || ''
-const BAIDU_OCR_SECRET_KEY = process.env.BAIDU_OCR_SECRET_KEY || ''
+const execAsync = promisify(exec)
 
 // 临时上传目录
 const UPLOAD_DIR = path.join(__dirname, '../../data/uploads')
@@ -18,23 +17,6 @@ async function ensureUploadDir() {
   }
 }
 
-// 获取百度 Access Token
-async function getAccessToken(): Promise<string> {
-  if (!BAIDU_OCR_API_KEY || !BAIDU_OCR_SECRET_KEY) {
-    throw new Error('百度 OCR 配置缺失，请设置 BAIDU_OCR_API_KEY 和 BAIDU_OCR_SECRET_KEY')
-  }
-
-  const url = 'https://aip.baidubce.com/oauth/2.0/token'
-  const params = new URLSearchParams({
-    grant_type: 'client_credentials',
-    client_id: BAIDU_OCR_API_KEY,
-    client_secret: BAIDU_OCR_SECRET_KEY
-  })
-
-  const response = await axios.post(`${url}?${params.toString()}`)
-  return response.data.access_token
-}
-
 // OCR 识别结果
 export interface OCRResult {
   text: string
@@ -45,84 +27,99 @@ export interface OCRResult {
 // 保存上传的文件
 export async function saveUploadedFile(buffer: Buffer, originalName: string): Promise<string> {
   await ensureUploadDir()
-  
+
   const ext = path.extname(originalName) || '.jpg'
   const filename = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}${ext}`
   const filepath = path.join(UPLOAD_DIR, filename)
-  
+
   await fs.writeFile(filepath, buffer)
-  
+
   // 返回相对路径
   return `/uploads/${filename}`
 }
 
-// 通用文字识别（高精度版）
-export async function recognizeText(imageBase64: string): Promise<string> {
+// 将 base64 图片保存为临时文件
+async function saveBase64Image(imageBase64: string): Promise<string> {
+  await ensureUploadDir()
+
+  const filename = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.png`
+  const filepath = path.join(UPLOAD_DIR, filename)
+
+  // 处理可能包含 data:image 前缀的 base64
+  const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, '')
+  const buffer = Buffer.from(base64Data, 'base64')
+
+  await fs.writeFile(filepath, buffer)
+
+  return filepath
+}
+
+// 使用 Tesseract OCR 识别文字
+async function tesseractRecognize(imagePath: string, lang: string = 'chi_sim+eng'): Promise<string> {
   try {
-    const token = await getAccessToken()
-    const url = `https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic?access_token=${token}`
-    
-    const response = await axios.post(url, 
-      { image: imageBase64 },
-      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-    )
-    
-    if (response.data.error_code) {
-      throw new Error(`百度 OCR 错误: ${response.data.error_msg}`)
-    }
-    
-    const words = response.data.words_result || []
-    return words.map((w: any) => w.words).join('\n')
+    const { stdout } = await execAsync(`tesseract "${imagePath}" stdout -l ${lang}`)
+    return stdout.trim()
   } catch (error) {
-    console.error('OCR 识别失败:', error)
-    throw error
+    console.error('Tesseract OCR 执行失败:', error)
+    throw new Error('OCR 识别失败，请确保已安装 tesseract-ocr 和中文语言包')
   }
 }
 
-// 表格识别
-export async function recognizeTable(imageBase64: string): Promise<{ text: string; tableData: string[][] }> {
+// 通用文字识别
+export async function recognizeText(imageBase64: string): Promise<string> {
+  const imagePath = await saveBase64Image(imageBase64)
+
   try {
-    const token = await getAccessToken()
-    const url = `https://aip.baidubce.com/rest/2.0/ocr/v1/table?access_token=${token}`
-    
-    const response = await axios.post(url,
-      { image: imageBase64 },
-      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
-    )
-    
-    if (response.data.error_code) {
-      throw new Error(`百度 OCR 错误: ${response.data.error_msg}`)
+    const text = await tesseractRecognize(imagePath)
+    return text
+  } finally {
+    // 清理临时文件
+    try {
+      await fs.unlink(imagePath)
+    } catch {
+      // 忽略删除错误
     }
-    
-    // 解析表格数据
-    const result = response.data.result
+  }
+}
+
+// 表格识别（Tesseract 不原生支持表格，使用文本识别后简单处理）
+export async function recognizeTable(imageBase64: string): Promise<{ text: string; tableData: string[][] }> {
+  const imagePath = await saveBase64Image(imageBase64)
+
+  try {
+    const text = await tesseractRecognize(imagePath)
+
+    // 简单表格解析：按行分割，尝试识别表格结构
+    const lines = text.split('\n').filter(line => line.trim())
     const tableData: string[][] = []
-    
-    if (result && result.tables) {
-      for (const table of result.tables) {
-        for (const cell of table.cells || []) {
-          const row = cell.row || 0
-          const col = cell.col || 0
-          if (!tableData[row]) tableData[row] = []
-          tableData[row][col] = cell.words || ''
-        }
+
+    // 尝试通过空格或制表符分隔识别列
+    for (const line of lines) {
+      // 如果行中有多个空格，尝试分割成列
+      const columns = line.trim().split(/\s{2,}/).map(cell => cell.trim())
+      if (columns.length > 1) {
+        tableData.push(columns)
+      } else {
+        // 单行作为单列
+        tableData.push([line.trim()])
       }
     }
-    
-    // 提取纯文本
-    const text = tableData.map(row => row.join(' ')).join('\n')
-    
+
     return { text, tableData }
-  } catch (error) {
-    console.error('表格识别失败:', error)
-    throw error
+  } finally {
+    // 清理临时文件
+    try {
+      await fs.unlink(imagePath)
+    } catch {
+      // 忽略删除错误
+    }
   }
 }
 
 // 综合识别（先尝试表格，失败则使用通用识别）
 export async function recognize(imageBase64: string): Promise<OCRResult> {
   try {
-    // 先尝试表格识别
+    // 尝试表格识别
     const { text, tableData } = await recognizeTable(imageBase64)
     return {
       text,
@@ -139,7 +136,12 @@ export async function recognize(imageBase64: string): Promise<OCRResult> {
   }
 }
 
-// 检查 OCR 是否可用
-export function isOCRAvailable(): boolean {
-  return !!(BAIDU_OCR_API_KEY && BAIDU_OCR_SECRET_KEY)
+// 检查 OCR 是否可用（检查 tesseract 是否安装）
+export async function isOCRAvailable(): Promise<boolean> {
+  try {
+    await execAsync('which tesseract')
+    return true
+  } catch {
+    return false
+  }
 }
