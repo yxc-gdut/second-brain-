@@ -1,5 +1,6 @@
 import Router from 'koa-router'
 import * as ocrService from '../services/ocr'
+import path from 'path'
 
 const router = new Router({ prefix: '/api/ocr' })
 
@@ -29,12 +30,20 @@ router.post('/preview', async (ctx) => {
       return
     }
 
+    // 处理可能包含 data:image 前缀的 base64
+    const base64Data = image.replace(/^data:image\/\w+;base64,/, '')
+
     // 保存图片文件
-    const imageBuffer = Buffer.from(image, 'base64')
+    const imageBuffer = Buffer.from(base64Data, 'base64')
     const imageUrl = await ocrService.saveUploadedFile(imageBuffer, imageName)
 
+    // 获取文件绝对路径进行 OCR 识别
+    const UPLOAD_DIR = path.join(__dirname, '../../data/uploads')
+    const filename = path.basename(imageUrl)
+    const imagePath = path.join(UPLOAD_DIR, filename)
+
     // 调用 OCR 识别
-    const result = await ocrService.recognize(image)
+    const result = await ocrService.recognizeFromFile(imagePath)
     result.imageUrl = imageUrl
 
     ctx.body = {
