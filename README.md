@@ -72,7 +72,7 @@ AI 实时生成思维导图式知识图谱
 | 前端 | Vue 3 + Vite + PWA | 移动端优先，支持离线访问 |
 | 后端 | Koa.js 2.0 + TypeScript | 轻量 API 服务 |
 | 存储 | Markdown 文件 + JSON | work.md / personal.md / tags.json |
-| OCR | 百度表格识别 | 印刷体文字识别 |
+| OCR | Tesseract OCR (本地) | 印刷体文字识别，支持中英文 |
 | ASR | 讯飞语音 | 语音识别转文字 |
 | AI | Kimi API | 标签推荐、分类建议、问答 |
 
@@ -108,9 +108,9 @@ second-brain/
 cd backend
 npm install
 
-# 配置环境变量（可选，用于 OCR 和 LLM 功能）
+# 配置环境变量（可选，用于 LLM 功能）
 cp .env.example .env
-# 编辑 .env 文件，填入你的百度 OCR 密钥
+# 编辑 .env 文件，填入你的 LLM API Key
 
 npm run dev
 # 服务运行在 http://localhost:3000
@@ -156,19 +156,23 @@ npm run dev
 
 后端支持从 `.env` 文件加载环境变量，参考 `backend/.env.example`。
 
-### OCR 配置（百度智能云）
+### OCR 配置（Tesseract）
 
-在 `backend/.env` 中配置：
+Tesseract OCR 在本地运行，无需配置 API Key。
+
+**安装依赖：**
 ```bash
-BAIDU_OCR_APP_ID=your_app_id
-BAIDU_OCR_API_KEY=your_api_key
-BAIDU_OCR_SECRET_KEY=your_secret_key
+# Ubuntu/Debian
+sudo apt-get install tesseract-ocr tesseract-ocr-chi-sim tesseract-ocr-chi-tra
+
+# macOS
+brew install tesseract tesseract-lang
 ```
 
-获取方式：
-1. 访问 [百度智能云](https://cloud.baidu.com/)
-2. 进入「文字识别 OCR」服务
-3. 创建应用，获取 API Key 和 Secret Key
+**验证安装：**
+```bash
+tesseract --version
+```
 
 ### LLM 配置（可选）
 
