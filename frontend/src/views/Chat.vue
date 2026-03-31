@@ -22,7 +22,7 @@
               <ul v-if="showRefs[index]" class="refs-list">
                 <li v-for="ref in msg.references" :key="ref.noteId" class="ref-item">
                   <span class="ref-category">{{ ref.category === 'work' ? '💼' : '🏠' }}</span>
-                  <span class="ref-preview">{{ ref.preview }}</span>
+                  <span class="ref-preview">{{ ref.content?.substring(0, 50) }}...</span>
                   <span class="ref-source">({{ formatDate(ref.createdAt) }})</span>
                 </li>
               </ul>

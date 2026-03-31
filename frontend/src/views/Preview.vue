@@ -119,7 +119,7 @@ import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeftIcon, CameraIcon } from '@heroicons/vue/24/outline'
 import CategorySelector from '@/components/CategorySelector.vue'
-import { createNote, suggestTags, type Tag } from '@/api/notes'
+import { createNote, suggestTags, recognizeImage, type Tag, type OCRResult } from '@/api/notes'
 
 const route = useRoute()
 const router = useRouter()
@@ -132,14 +132,14 @@ const aiSuggestion = ref<{
   category: 'work' | 'personal'
   confidence: number
   reason: string
-} | null>(null)
+} | undefined>(undefined)
 const saving = ref(false)
 const error = ref('')
 
 // 图片相关
 const fileInput = ref<HTMLInputElement | null>(null)
 const imagePreview = ref('')
-const imageBase64 = ref('')
+const imageBase64 = ref<string>('')
 const recognizing = ref(false)
 
 // 标签相关
@@ -203,33 +203,33 @@ function onImageSelected(e: Event) {
   // 预览图片
   const reader = new FileReader()
   reader.onload = (e) => {
-    imagePreview.value = e.target?.result as string
-    imageBase64.value = (e.target?.result as string).split(',')[1] // 去掉 data:image/xxx;base64, 前缀
+    const result = e.target?.result as string | undefined
+    if (!result) return
+    imagePreview.value = result
+    const base64Parts = result.split(',')
+    imageBase64.value = base64Parts.length > 1 ? base64Parts[1]! : ''
   }
   reader.readAsDataURL(file)
 }
 
 // 识别图片
 async function recognize() {
-  if (!imageBase64.value) return
+  if (!imageBase64.value || imageBase64.value === '') return
   
   recognizing.value = true
   error.value = ''
   
   try {
-    // 这里应该调用 OCR API
-    // const result = await recognizeImage(imageBase64.value)
-    // content.value = result.text
-    // source.value = '图片识别'
-    
-    // 模拟识别结果
-    await new Promise(r => setTimeout(r, 1000))
-    content.value = 'Q1销售额增长20%，主要得益于新渠道拓展...'
+    // 调用 OCR API
+    const result = await recognizeImage(imageBase64.value, 'upload.png')
+    content.value = result.text
     source.value = '图片识别'
+    
+    // AI 分类建议
     aiSuggestion.value = {
       category: 'work',
       confidence: 0.85,
-      reason: '包含销售数据、业务增长等关键词'
+      reason: '图片识别内容'
     }
     category.value = 'work'
   } catch (err) {
