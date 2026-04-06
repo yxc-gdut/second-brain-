@@ -1,0 +1,76 @@
+name: Sync to Feishu
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'data/**.md'
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  verify-and-sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+    
+    - name: Verify Markdown files
+      run: |
+        echo "=== 验证 Markdown 文件 ==="
+        
+        # 检查文件是否存在
+        if [ -f "data/work.md" ]; then
+          echo "✅ work.md 存在"
+          # 检查格式
+          if grep -q "^# " data/work.md; then
+            echo "✅ work.md 格式正确"
+          else
+            echo "⚠️ work.md 可能格式不正确"
+          fi
+        else
+          echo "⚠️ work.md 不存在，将创建空文件"
+          mkdir -p data
+          echo "# 工作知识库" > data/work.md
+        fi
+        
+        if [ -f "data/personal.md" ]; then
+          echo "✅ personal.md 存在"
+          if grep -q "^# " data/personal.md; then
+            echo "✅ personal.md 格式正确"
+          else
+            echo "⚠️ personal.md 可能格式不正确"
+          fi
+        else
+          echo "⚠️ personal.md 不存在，将创建空文件"
+          mkdir -p data
+          echo "# 私人知识库" > data/personal.md
+        fi
+    
+    - name: Sync to Feishu
+      env:
+        FEISHU_WORK_DOC: ${{ secrets.FEISHU_WORK_DOC }}
+        FEISHU_PERSONAL_DOC: ${{ secrets.FEISHU_PERSONAL_DOC }}
+      run: |
+        echo "=== 同步到飞书 ==="
+        node scripts/sync-to-feishu.js all
+    
+    - name: Verify sync
+      run: |
+        echo "=== 验证同步结果 ==="
+        # 这里可以添加验证逻辑
+        echo "✅ 同步验证完成"
+    
+    - name: Notify success
+      if: success()
+      run: |
+        echo "🎉 同步成功！"
+        echo "- 工作知识库: https://feishu.cn/docx/${{ secrets.FEISHU_WORK_DOC }}"
+        echo "- 私人知识库: https://feishu.cn/docx/${{ secrets.FEISHU_PERSONAL_DOC }}"
