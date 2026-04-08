@@ -1,524 +1,479 @@
 <template>
-  <div class="preview">
-    <header class="header">
+  <div class="preview-page">
+    <!-- Header -->
+    <header class="preview-header">
       <button class="back-btn" @click="goBack">
-        <ArrowLeftIcon class="w-6 h-6" />
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
+        </svg>
       </button>
-      <h1 class="title">预览确认</h1>
-      <div class="w-6"></div>
+      <h1 class="header-title">{{ headerTitle }}</h1>
+      <button class="save-btn" :disabled="!canSave" @click="saveNote">
+        保存
+      </button>
     </header>
 
-    <main class="content">
-      <!-- 图片上传区域（拍照模式） -->
-      <div v-if="type === 'camera'" class="field">
-        <label class="label">图片：</label>
-        <div class="upload-area" @click="selectImage">
-          <input
-            ref="fileInput"
-            type="file"
-            accept="image/*"
-            class="hidden"
-            @change="onImageSelected"
-          />
-          <div v-if="!imagePreview" class="upload-placeholder">
-            <CameraIcon class="w-12 h-12 text-gray-400 mb-2" />
-            <span class="text-gray-500">点击上传图片</span>
-          </div>
-          <img v-else :src="imagePreview" class="uploaded-image" />
-        </div>
-        <button v-if="imagePreview && !recognizing" class="retry-btn" @click="recognize">
-          🔍 识别图片
-        </button>
-        <div v-if="recognizing" class="recognizing">识别中...</div>
-      </div>
-
-      <!-- 来源 -->
-      <div class="field">
-        <label class="label">来源：</label>
+    <!-- Preview Content -->
+    <main class="preview-content">
+      <!-- Source Input -->
+      <div class="input-section">
+        <label class="input-label">来源</label>
         <input
           v-model="source"
           type="text"
-          class="input"
-          placeholder="请输入来源..."
+          class="text-input"
+          placeholder="书籍、公众号、小红书等..."
         />
       </div>
 
-      <!-- 内容 -->
-      <div class="field">
-        <label class="label">内容：</label>
+      <!-- Content Input -->
+      <div class="input-section">
+        <label class="input-label">内容</label>
         <textarea
           v-model="content"
-          class="textarea"
+          class="textarea-input"
+          placeholder="记录你的想法..."
           rows="6"
-          placeholder="识别的内容..."
         ></textarea>
-        <button v-if="type !== 'text' && !recognizing" class="retry-btn" @click="retry">
-          🔄 重新识别
-        </button>
       </div>
 
-      <!-- 分类 -->
-      <CategorySelector
-        v-model="category"
-        :ai-suggestion="aiSuggestion"
-      />
-
-      <!-- 标签推荐 -->
-      <div class="field">
-        <label class="label">标签：</label>
-        <div class="tags-area">
-          <div v-if="suggestingTags" class="suggesting">推荐中...</div>
-          <div v-else-if="suggestedTags.length > 0" class="suggested-tags">
-            <span class="tags-label">推荐：</span>
-            <button
-              v-for="tag in suggestedTags"
-              :key="tag.name"
-              class="tag-btn"
-              :class="{ selected: selectedTags.includes(tag.name) }"
-              :style="{ borderColor: tag.color, color: selectedTags.includes(tag.name) ? '#fff' : tag.color, backgroundColor: selectedTags.includes(tag.name) ? tag.color : 'transparent' }"
-              @click="toggleTag(tag.name)"
-            >
-              {{ tag.name }}
-            </button>
-          </div>
-          <div class="custom-tag">
-            <input
-              v-model="customTagInput"
-              type="text"
-              class="input tag-input"
-              placeholder="添加自定义标签..."
-              @keyup.enter="addCustomTag"
-            />
-            <button class="add-tag-btn" @click="addCustomTag">+</button>
-          </div>
-          <div v-if="selectedTags.length > 0" class="selected-tags">
-            <span v-for="tag in selectedTags" :key="tag" class="selected-tag">
-              {{ tag }}
-              <button class="remove-tag" @click="removeTag(tag)">×</button>
-            </span>
-          </div>
+      <!-- Category Selector -->
+      <div class="input-section">
+        <label class="input-label">分类</label>
+        <div class="category-options">
+          <button
+            class="category-btn"
+            :class="{ active: category === 'work' }"
+            @click="category = 'work'"
+          >
+            <span class="category-icon">💼</span>
+            <span class="category-text">工作</span>
+          </button>
+          <button
+            class="category-btn"
+            :class="{ active: category === 'personal' }"
+            @click="category = 'personal'"
+          >
+            <span class="category-icon">🏠</span>
+            <span class="category-text">私人</span>
+          </button>
         </div>
       </div>
 
-      <!-- 错误提示 -->
-      <div v-if="error" class="error-message">{{ error }}</div>
-
-      <!-- 保存按钮 -->
-      <div class="actions">
-        <button class="btn-cancel" @click="goBack" :disabled="saving">取消</button>
-        <button class="btn-save" @click="save" :disabled="saving">
-          {{ saving ? '保存中...' : '保存' }}
-        </button>
+      <!-- Tags (if any AI suggestions) -->
+      <div v-if="suggestedTags.length > 0" class="input-section">
+        <label class="input-label">推荐标签</label>
+        <div class="tags-list">
+          <button
+            v-for="tag in suggestedTags"
+            :key="tag"
+            class="tag-btn"
+            :class="{ selected: selectedTags.includes(tag) }"
+            @click="toggleTag(tag)"
+          >
+            {{ tag }}
+          </button>
+        </div>
       </div>
     </main>
+
+    <!-- Bottom Action -->
+    <footer class="preview-footer">
+      <button class="action-btn" :disabled="!canSave" @click="saveNote">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        保存笔记
+      </button>
+    </footer>
+
+    <!-- Save Success Toast -->
+    <transition name="toast">
+      <div v-if="showSuccess" class="toast success">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+        笔记已保存
+      </div>
+    </transition>
+
+    <!-- Error Toast -->
+    <transition name="toast">
+      <div v-if="showError" class="toast error">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        {{ errorMessage }}
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { ArrowLeftIcon, CameraIcon } from '@heroicons/vue/24/outline'
-import CategorySelector from '@/components/CategorySelector.vue'
-import { createNote, suggestTags, recognizeImage, type Tag, type OCRResult } from '@/api/notes'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { createNote, type Note } from '@/api/notes'
 
-const route = useRoute()
 const router = useRouter()
+const route = useRoute()
 
-const type = ref(route.query.type as string || 'text')
-const source = ref('')
 const content = ref('')
+const source = ref('')
 const category = ref<'work' | 'personal'>('personal')
-const aiSuggestion = ref<{
-  category: 'work' | 'personal'
-  confidence: number
-  reason: string
-} | undefined>(undefined)
-const saving = ref(false)
-const error = ref('')
-
-// 图片相关
-const fileInput = ref<HTMLInputElement | null>(null)
-const imagePreview = ref('')
-const imageBase64 = ref<string>('')
-const recognizing = ref(false)
-
-// 标签相关
-const suggestedTags = ref<Tag[]>([])
 const selectedTags = ref<string[]>([])
-const customTagInput = ref('')
-const suggestingTags = ref(false)
+const suggestedTags = ref<string[]>([])
+const saving = ref(false)
+const showSuccess = ref(false)
+const showError = ref(false)
+const errorMessage = ref('')
 
-onMounted(() => {
-  // 模拟 AI 建议（文字/语音模式）
-  if (type.value === 'voice') {
-    content.value = '今天开会讨论了产品迭代计划...'
-    source.value = '会议记录'
-    aiSuggestion.value = {
-      category: 'work',
-      confidence: 0.72,
-      reason: '会议相关内容'
-    }
-    category.value = 'work'
+const inputType = computed(() => route.query.type as string || 'text')
+
+const headerTitle = computed(() => {
+  switch (inputType.value) {
+    case 'camera': return '拍照记录'
+    case 'voice': return '语音记录'
+    default: return '文字记录'
   }
-  
-  // 内容变化时推荐标签
-  watch(content, (newContent) => {
-    if (newContent.length > 10) {
-      debounceSuggestTags(newContent)
-    }
-  }, { immediate: true })
 })
 
-// 防抖推荐标签
-let suggestTimeout: ReturnType<typeof setTimeout> | null = null
-function debounceSuggestTags(text: string) {
-  if (suggestTimeout) clearTimeout(suggestTimeout)
-  suggestTimeout = setTimeout(() => {
-    fetchSuggestedTags(text)
-  }, 500)
+const canSave = computed(() => {
+  return content.value.trim().length > 0 && !saving.value
+})
+
+onMounted(() => {
+  // For now, just initialize
+})
+
+function goBack() {
+  router.back()
 }
 
-async function fetchSuggestedTags(text: string) {
-  suggestingTags.value = true
-  try {
-    const tags = await suggestTags(text)
-    suggestedTags.value = tags
-  } catch (err) {
-    console.error('推荐标签失败:', err)
-  } finally {
-    suggestingTags.value = false
-  }
-}
-
-// 图片上传
-function selectImage() {
-  fileInput.value?.click()
-}
-
-function onImageSelected(e: Event) {
-  const target = e.target as HTMLInputElement
-  const file = target.files?.[0]
-  if (!file) return
-
-  // 预览图片
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    const result = e.target?.result as string | undefined
-    if (!result) return
-    imagePreview.value = result
-    const base64Parts = result.split(',')
-    imageBase64.value = base64Parts.length > 1 ? base64Parts[1]! : ''
-  }
-  reader.readAsDataURL(file)
-}
-
-// 识别图片
-async function recognize() {
-  if (!imageBase64.value || imageBase64.value === '') return
-  
-  recognizing.value = true
-  error.value = ''
-  
-  try {
-    // 调用 OCR API
-    const result = await recognizeImage(imageBase64.value, 'upload.png')
-    content.value = result.text
-    source.value = '图片识别'
-    
-    // AI 分类建议
-    aiSuggestion.value = {
-      category: 'work',
-      confidence: 0.85,
-      reason: '图片识别内容'
-    }
-    category.value = 'work'
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : '识别失败'
-  } finally {
-    recognizing.value = false
-  }
-}
-
-const goBack = () => router.back()
-
-const retry = () => {
-  if (type.value === 'camera' && imageBase64.value) {
-    recognize()
+function toggleTag(tag: string) {
+  const index = selectedTags.value.indexOf(tag)
+  if (index > -1) {
+    selectedTags.value.splice(index, 1)
   } else {
-    // 重新识别语音（模拟）
-    content.value = '重新识别的内容...'
-  }
-}
-
-// 标签操作
-function toggleTag(tagName: string) {
-  const idx = selectedTags.value.indexOf(tagName)
-  if (idx >= 0) {
-    selectedTags.value.splice(idx, 1)
-  } else {
-    selectedTags.value.push(tagName)
-  }
-}
-
-function addCustomTag() {
-  const tag = customTagInput.value.trim()
-  if (tag && !selectedTags.value.includes(tag)) {
     selectedTags.value.push(tag)
-    customTagInput.value = ''
   }
 }
 
-function removeTag(tag: string) {
-  const idx = selectedTags.value.indexOf(tag)
-  if (idx >= 0) {
-    selectedTags.value.splice(idx, 1)
-  }
-}
+async function saveNote() {
+  if (!canSave.value) return
 
-// 保存
-const save = async () => {
-  if (!content.value.trim()) {
-    error.value = '内容不能为空'
-    return
-  }
-  
   saving.value = true
-  error.value = ''
-  
   try {
-    await createNote({
+    const note = {
       content: content.value,
-      source: source.value,
+      source: source.value || undefined,
       category: category.value,
       tags: selectedTags.value
-    })
-    router.push('/')
+    }
+    
+    await createNote(note)
+    showSuccess.value = true
+    
+    setTimeout(() => {
+      router.push('/')
+    }, 1500)
   } catch (err) {
-    error.value = err instanceof Error ? err.message : '保存失败'
+    errorMessage.value = err instanceof Error ? err.message : '保存失败'
+    showError.value = true
+    setTimeout(() => {
+      showError.value = false
+    }, 3000)
+  } finally {
     saving.value = false
   }
 }
 </script>
 
 <style scoped>
-.preview {
+.preview-page {
   min-height: 100vh;
-  background: white;
+  background: var(--color-black);
+  padding-top: 48px;
+  display: flex;
+  flex-direction: column;
 }
 
-.header {
+/* Header */
+.preview-header {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid #E5E7EB;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .back-btn {
-  color: #111827;
-}
-
-.title {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.content {
-  padding: 16px;
-}
-
-.field {
-  margin-bottom: 20px;
-}
-
-.label {
-  font-size: 14px;
-  color: #6B7280;
-  margin-bottom: 8px;
-  display: block;
-}
-
-.input,
-.textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #E5E7EB;
-  border-radius: 8px;
-  font-size: 16px;
-  font-family: inherit;
-}
-
-.textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-
-.retry-btn {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #3B82F6;
-}
-
-.actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 32px;
-}
-
-.btn-cancel,
-.btn-save {
-  flex: 1;
-  padding: 14px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-.btn-cancel {
-  background: #F3F4F6;
-  color: #6B7280;
-}
-
-.btn-cancel:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn-save {
-  background: #3B82F6;
-  color: white;
-}
-
-.btn-save:disabled {
-  background: #93C5FD;
-  cursor: not-allowed;
-}
-
-.error-message {
-  color: #EF4444;
-  font-size: 14px;
-  margin-bottom: 16px;
-  padding: 12px;
-  background: #FEF2F2;
-  border-radius: 8px;
-}
-
-/* 图片上传 */
-.upload-area {
-  border: 2px dashed #E5E7EB;
-  border-radius: 12px;
-  padding: 32px;
-  text-align: center;
-  cursor: pointer;
-  transition: border-color 0.2s;
-}
-
-.upload-area:hover {
-  border-color: #3B82F6;
-}
-
-.upload-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.uploaded-image {
-  max-width: 100%;
-  max-height: 300px;
-  border-radius: 8px;
-}
-
-.hidden {
-  display: none;
-}
-
-.recognizing {
-  margin-top: 8px;
-  font-size: 14px;
-  color: #3B82F6;
-}
-
-/* 标签 */
-.tags-area {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.suggesting {
-  font-size: 14px;
-  color: #6B7280;
-}
-
-.suggested-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-
-.tags-label {
-  font-size: 14px;
-  color: #6B7280;
-}
-
-.tag-btn {
-  padding: 6px 12px;
-  border: 2px solid;
-  border-radius: 16px;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.tag-btn.selected {
-  color: white;
-}
-
-.custom-tag {
-  display: flex;
-  gap: 8px;
-}
-
-.tag-input {
-  flex: 1;
-}
-
-.add-tag-btn {
-  padding: 0 16px;
-  background: #3B82F6;
-  color: white;
-  border-radius: 8px;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.selected-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.selected-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 12px;
-  background: #3B82F6;
-  color: white;
-  border-radius: 16px;
-  font-size: 14px;
-}
-
-.remove-tag {
-  width: 18px;
-  height: 18px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.3);
+  background: transparent;
+  border: none;
+  color: var(--color-apple-blue);
+  cursor: pointer;
   border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.header-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.save-btn {
+  padding: 8px 16px;
+  background: var(--color-apple-blue);
+  border: none;
+  border-radius: var(--radius-pill);
+  color: white;
+  font-family: var(--font-text);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.save-btn:hover:not(:disabled) {
+  background: #0077ed;
+}
+
+.save-btn:disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+/* Content */
+.preview-content {
+  flex: 1;
+  padding: 72px 22px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.input-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input-label {
+  font-family: var(--font-text);
   font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.text-input,
+.textarea-input {
+  width: 100%;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-standard);
+  color: var(--color-white);
+  font-family: var(--font-text);
+  font-size: 16px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.text-input::placeholder,
+.textarea-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.text-input:focus,
+.textarea-input:focus {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.textarea-input {
+  resize: none;
+  min-height: 150px;
+  line-height: 1.6;
+}
+
+/* Category */
+.category-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.category-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-large);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.category-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.category-btn.active {
+  background: rgba(0, 113, 227, 0.15);
+  border-color: var(--color-apple-blue);
+}
+
+.category-icon {
+  font-size: 20px;
+}
+
+.category-text {
+  font-family: var(--font-text);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-white);
+}
+
+/* Tags */
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-btn {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-pill);
+  color: var(--color-white);
+  font-family: var(--font-text);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tag-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.tag-btn.selected {
+  background: var(--color-apple-blue);
+  border-color: var(--color-apple-blue);
+}
+
+/* Footer */
+.preview-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 22px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.action-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  background: var(--color-apple-blue);
+  border: none;
+  border-radius: var(--radius-pill);
+  color: white;
+  font-family: var(--font-text);
+  font-size: 17px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-btn:hover:not(:disabled) {
+  background: #0077ed;
+  transform: scale(1.01);
+}
+
+.action-btn:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.action-btn:disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 14px 24px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-text);
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.toast.success {
+  background: var(--color-near-black);
+  color: var(--color-white);
+}
+
+.toast.success svg {
+  color: #30c864;
+}
+
+.toast.error {
+  background: #1a1a1a;
+  color: white;
+}
+
+.toast.error svg {
+  color: #ff3b30;
+}
+
+.toast-enter-active,
+.toast-leave-active {
+  transition: all 0.3s ease;
+}
+
+.toast-enter-from,
+.toast-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px);
 }
 </style>

@@ -1,5 +1,15 @@
 # 更新日志
 
+## 2026-04-08 22:01
+- ✅ UI 大翻新：Apple Design System 设计规范
+- ✅ 新增 apple.css 设计系统变量
+- ✅ 首页：黑色英雄区 + 胶囊按钮
+- ✅ AI 问答：全黑 ChatGPT 风格界面
+- ✅ 设置页：深色半透明卡片 + 统计数据
+- ✅ 预览页：沉浸式深色录入界面
+- ✅ 新增 NoteDetail 笔记详情页
+- ✅ 玻璃态导航栏 (backdrop-filter blur)
+
 ## 2026-04-08 20:55
 - ✅ 新增 API 路由：chat、ocr、search、tags
 - ✅ 新增服务：markdown存储、chat、ocrService、tag

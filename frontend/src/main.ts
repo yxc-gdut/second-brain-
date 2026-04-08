@@ -1,3 +1,4 @@
+import './assets/styles/apple.css'
 import './assets/styles/main.css'
 
 import { createApp } from 'vue'

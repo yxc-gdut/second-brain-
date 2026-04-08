@@ -1,85 +1,107 @@
 <template>
   <div class="category-selector">
-    <label class="label">分类：</label>
-    <div class="options">
+    <label class="selector-label">分类</label>
+    <div class="category-options">
       <button
-        class="option"
-        :class="{ active: model === 'work' }"
-        @click="model = 'work'"
+        class="category-btn"
+        :class="{ active: modelValue === 'work' }"
+        @click="$emit('update:modelValue', 'work')"
       >
-        <span class="icon">💼</span>
-        <span>工作</span>
+        <span class="category-icon">💼</span>
+        <span class="category-text">工作</span>
       </button>
       <button
-        class="option"
-        :class="{ active: model === 'personal' }"
-        @click="model = 'personal'"
+        class="category-btn"
+        :class="{ active: modelValue === 'personal' }"
+        @click="$emit('update:modelValue', 'personal')"
       >
-        <span class="icon">🏠</span>
-        <span>私人</span>
+        <span class="category-icon">🏠</span>
+        <span class="category-text">私人</span>
       </button>
     </div>
-    <p v-if="aiSuggestion" class="suggestion">
-      AI 建议：{{ aiSuggestion.category === 'work' ? '工作' : '私人' }}
+    <p v-if="aiSuggestion" class="ai-suggestion">
+      AI 建议: {{ aiSuggestion.category === 'work' ? '工作' : '私人' }}
       （置信度 {{ Math.round(aiSuggestion.confidence * 100) }}%）
     </p>
   </div>
 </template>
 
 <script setup lang="ts">
-const model = defineModel<'work' | 'personal'>('modelValue')
+interface AISuggestion {
+  category: 'work' | 'personal'
+  confidence: number
+  reason: string
+}
 
 defineProps<{
-  aiSuggestion?: {
-    category: 'work' | 'personal'
-    confidence: number
-    reason: string
-  }
+  modelValue: 'work' | 'personal'
+  aiSuggestion?: AISuggestion
+}>()
+
+defineEmits<{
+  'update:modelValue': [value: 'work' | 'personal']
 }>()
 </script>
 
 <style scoped>
 .category-selector {
-  padding: 16px 0;
-}
-
-.label {
-  font-size: 14px;
-  color: #6B7280;
-  margin-bottom: 8px;
-  display: block;
-}
-
-.options {
   display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.selector-label {
+  font-family: var(--font-text);
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.category-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
-.option {
-  flex: 1;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 2px solid #E5E7EB;
-  background: white;
+.category-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-large);
+  cursor: pointer;
   transition: all 0.2s;
 }
 
-.option.active {
-  border-color: #3B82F6;
-  background: #EFF6FF;
+.category-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.icon {
+.category-btn.active {
+  background: rgba(0, 113, 227, 0.15);
+  border-color: var(--color-apple-blue);
+}
+
+.category-icon {
   font-size: 20px;
 }
 
-.suggestion {
-  margin-top: 8px;
+.category-text {
+  font-family: var(--font-text);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-white);
+}
+
+.ai-suggestion {
+  font-family: var(--font-text);
   font-size: 13px;
-  color: #3B82F6;
+  color: var(--color-apple-blue);
+  margin-top: 4px;
 }
 </style>
