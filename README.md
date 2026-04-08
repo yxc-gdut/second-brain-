@@ -1,45 +1,69 @@
-# 第二大脑 - 同步功能实现
+# 第二大脑 (Second Brain)
 
+个人知识管理系统，帮助用户快速记录阅读中的关键信息，自动归类整理。
 
-## 核心代码
+## 技术栈
 
-### 后端 (`backend/src/`)
-- `services/mdStorage.ts` - Markdown读写
-- `services/syncService.ts` - 飞同步
-- `utils/feishu.ts` - 飞书 API
-- `routes/notes.ts` - API 路由
-- `app.ts` - 主应用
+- **前端**: Vue 3 + Vite + PWA + Tailwind CSS
+- **后端**: Koa.js + Node.js
+- **存储**: Markdown 文件
+- **AI**: Kimi API / Moonshot API
 
-### 前端 (`frontend/src/`)
-- `components/SyncButton.vue` - 同步按钮
+## 快速开始
 
-## 工作流程
+### 后端
+
+```bash
+cd backend
+npm install
+node src/app.js
 ```
-用户输入
-    ↓
-tr - R/L beams
-    │
-d offset from each other
-    │
-tr
-    │
-    │
-    │
-    calibrator with V?    │
-    return;
-  } from '../calibration.    │
-  Stokes inear 
-  calibration
-  calibration: true
-} from './utilsn
-// 单例导出
-let instance: SyncService;
-export function getSync(config?: Config): SyncService {
-  if (!inst && config) {
-    instance = new SyncService(config);
-  }
-  if (!inst) {
-    throw new Error('未初始');
-  }
-  return instance;
-}
+
+后端端口: 3000
+
+### 前端
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### 生产环境部署
+
+```bash
+# 构建前端
+cd frontend && npm run build
+
+# 配置 Nginx
+sudo cp nginx/second-brain.conf /etc/nginx/sites-available/
+sudo ln -s /etc/nginx/sites-available/second-brain.conf /etc/nginx/sites-enabled/
+sudo nginx -t && sudo nginx -s reload
+
+# 启动后端
+cd backend && node src/app.js
+```
+
+## 功能
+
+- [x] 文字输入笔记
+- [x] 图片 OCR 识别
+- [x] 语音输入 (ASR)
+- [x] AI 自动标签
+- [x] 工作/私人分类
+- [x] Markdown 数据存储
+- [ ] AI 问答
+- [ ] 飞书同步
+
+## 文档
+
+- [PRD](https://my.feishu.cn/docx/RG7bdvw4MonYK8xHLy8cFmA8n5c)
+- [技术设计](https://my.feishu.cn/docx/E8lJdE9MtobI5Kxf33Hc4spantb)
+
+## 更新日志
+
+见 CHANGELOG.md
+
+---
+
+最后更新: 2026-04-08

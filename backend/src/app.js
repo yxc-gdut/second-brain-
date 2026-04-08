@@ -1,20 +1,20 @@
 /**
  * 第二大脑 - 后端 (JS版本)
  */
+require('dotenv').config();
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
 const path = require('path');
 const notesRouter = require('./routes/notes');
-const { getSyncService } = require('./services/syncService');
+const ocrRouter = require('./routes/ocr');
+const chatRouter = require('./routes/chat');
+const searchRouter = require('./routes/search');
+const tagsRouter = require('./routes/tags');
 
 const CONFIG = {
   port: 3000,
-  dataDir: path.join(__dirname, '../data'),
-  feishu: {
-    workDocToken: 'Gzl2dRdy8os6a2xJJhpcLcW1nae',
-    personalDocToken: 'JiHqdloiAomKBgxDmr0c09SPnSc'
-  }
+  dataDir: path.join(__dirname, '../data')
 };
 
 
@@ -25,17 +25,17 @@ async function main() {
   app.use(cors());
   app.use(bodyParser());
   
-  // 初始化同步服务
-  const sync = getSyncService({
-    dataDir: CONFIG.dataDir,
-    workDocToken: CONFIG.feishu.workDocToken,
-    personalDocToken: CONFIG.feishu.personalDocToken
-  });
-  await sync.init();
-  
   // 路由
   app.use(notesRouter.routes());
   app.use(notesRouter.allowedMethods());
+  app.use(ocrRouter.routes());
+  app.use(ocrRouter.allowedMethods());
+  app.use(chatRouter.routes());
+  app.use(chatRouter.allowedMethods());
+  app.use(searchRouter.routes());
+  app.use(searchRouter.allowedMethods());
+  app.use(tagsRouter.routes());
+  app.use(tagsRouter.allowedMethods());
   
   // 健康检查
   app.use(async (ctx, next) => {
