@@ -75,18 +75,34 @@ function prepareContent(filePath, type) {
 *来源: 第二大脑本地 ${type} 知识库*`;
 }
 
-// 同步到飞书（使用 feishu_doc 工具）
+// 同步到飞书（使用 feishu SDK）
 async function syncToFeishu(docToken, content, type) {
   info(`正在同步 ${type} 到飞书...`);
   
-  // 这里使用 OpenClaw 的 feishu_doc 工具
-  // 实际调用需要通过 OpenClaw 的 API
-  console.log(`需要同步的文档 Token: ${docToken}`);
-  console.log(`内容长度: ${content.length} 字符`);
-  
-  // 模拟同步成功
-  success(`${type} 同步完成`);
-  return true;
+  try {
+    // 动态加载 feishu 工具类
+    const { feishuDoc } = require('../backend/src/utils/feishu.js');
+    
+    console.log(`需要同步的文档 Token: ${docToken}`);
+    console.log(`内容长度: ${content.length} 字符`);
+    
+    // 调用飞书 SDK 写入
+    const result = await feishuDoc.write({
+      doc_token: docToken,
+      content: content
+    });
+    
+    if (result.success) {
+      success(`${type} 同步完成`);
+      return true;
+    } else {
+      error(`${type} 同步失败: ${result.error}`);
+      return false;
+    }
+  } catch (error) {
+    error(`${type} 同步失败: ${error.message}`);
+    return false;
+  }
 }
 
 // 验证飞书文档
