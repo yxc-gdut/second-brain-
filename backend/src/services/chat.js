@@ -30,7 +30,7 @@ async function callLLM(messages) {
   const response = await axios.post(LLM_API_URL, {
     model: LLM_MODEL,
     messages,
-    temperature: 0.7,
+    temperature: LLM_MODEL.includes('kimi') ? 1 : 0.7,
     max_tokens: 1500
   }, {
     headers: {
