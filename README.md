@@ -52,7 +52,7 @@ cd backend && node src/app.js
 - [x] AI 自动标签
 - [x] 工作/私人分类
 - [x] Markdown 数据存储
-- [ ] AI 问答
+- [x] AI 问答 (Kimi k2.5)
 - [ ] 飞书同步
 
 ## 文档
@@ -66,4 +66,4 @@ cd backend && node src/app.js
 
 ---
 
-最后更新: 2026-04-08
+最后更新: 2026-04-09

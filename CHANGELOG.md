@@ -1,5 +1,11 @@
 # 更新日志
 
+## 2026-04-09 18:19
+- ✅ 修复 Tailwind CSS v4 语法问题（@tailwind → @import "tailwindcss"）
+- ✅ 修复 Kimi k2.5 API temperature 配置（必须为 1）
+- ✅ 部署第二大脑到外网 175.178.94.65
+- ✅ AI 问答功能正式启用
+
 ## 2026-04-08 22:01
 - ✅ UI 大翻新：Apple Design System 设计规范
 - ✅ 新增 apple.css 设计系统变量
