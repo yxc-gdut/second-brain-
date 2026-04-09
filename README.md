@@ -54,6 +54,7 @@ cd backend && node src/app.js
 - [x] Markdown 数据存储
 - [x] AI 问答 (Kimi k2.5)
 - [x] 飞书同步（每日凌晨自动增量同步）
+- [x] 金山文档同步（每周日凌晨自动全量同步）
 
 ## 文档
 
@@ -66,4 +67,4 @@ cd backend && node src/app.js
 
 ---
 
-最后更新: 2026-04-09
+最后更新: 2026-04-10
