@@ -53,7 +53,7 @@ cd backend && node src/app.js
 - [x] 工作/私人分类
 - [x] Markdown 数据存储
 - [x] AI 问答 (Kimi k2.5)
-- [ ] 飞书同步
+- [x] 飞书同步（每日凌晨自动增量同步）
 
 ## 文档
 
