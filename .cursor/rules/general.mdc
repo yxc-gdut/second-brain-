@@ -1,0 +1,56 @@
+---
+description: 适用于所有代码文件的通用编码规范
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# 通用编码规范
+
+## 技术栈背景
+- 前端：Vue 3 + Composition API + TypeScript + Vite + Tailwind CSS v4
+- 后端：Koa.js + Node.js + TypeScript
+- 存储：Markdown 文件（work.md / personal.md）
+
+## 强制规范
+
+### TypeScript
+- **禁止使用 `any`**，用 `unknown` 替代或定义具体类型
+- 所有函数参数必须有类型注解
+- 接口用 `interface` 而非 `type`（更推荐）
+- 禁止 `var`，只允许 `const` 和 `let`
+
+```typescript
+// ✅ 正确
+interface NoteItem {
+  id: string
+  content: string
+  category: 'work' | 'personal'
+}
+
+// ❌ 错误
+const note: any = {}
+function foo(a) { return a }
+```
+
+### Git Commit 规范
+```
+feat: 新功能
+fix: 修复 bug
+docs: 文档更新
+style: 代码格式（不影响功能）
+refactor: 重构
+test: 测试相关
+chore: 构建/工具变更
+```
+
+### 代码风格
+- 使用 ESLint + Prettier 自动格式化，不要手动调整
+- 使用 `async/await` 而非 `.then().catch()`
+- 优先使用 `const`，只有变量会变时用 `let`
+- 禁止 `console.log`（调试完成后删除）
+
+### 安全红线
+- 禁止硬编码敏感信息（token、secret、密码）
+- 用户输入必须校验/过滤
+- 禁止 `eval()`
+- XSS 风险：`v-html` / `dangerouslySetInnerHTML` 必须审查
