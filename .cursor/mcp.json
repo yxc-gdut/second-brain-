@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "second-brain-context": {
+      "command": "node",
+      "args": ["scripts/mcp-context-server.js"],
+      "env": {},
+      "description": "第二大脑项目上下文：组件、API、路由、数据模型查询"
+    }
+  }
+}
