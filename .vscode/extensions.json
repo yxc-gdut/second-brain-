@@ -1,0 +1,26 @@
+{
+  "recommendations": [
+    "Vue.volar",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "usernamehw.errorlens"
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    "eslint.validate": [
+      "javascript",
+      "typescript",
+      "vue"
+    ],
+    "files.eol": "\n",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "[vue]": {
+      "editor.defaultFormatter": "Vue.volar"
+    }
+  }
+}

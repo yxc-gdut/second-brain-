@@ -79,7 +79,7 @@
               <span class="note-category" :class="note.category">
                 {{ note.category === 'work' ? '💼 工作' : '🏠 私人' }}
               </span>
-              <span class="note-source" v-if="note.source">{{ note.source }}</span>
+              <span v-if="note.source" class="note-source">{{ note.source }}</span>
               <span class="note-date">{{ formatDate(note.createdAt) }}</span>
             </div>
             <div v-if="note.tags?.length" class="note-tags">

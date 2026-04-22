@@ -9,7 +9,7 @@
     
     <p class="note-content">{{ truncatedContent }}</p>
     
-    <div class="card-footer" v-if="note.tags?.length || note.source">
+    <div v-if="note.tags?.length || note.source" class="card-footer">
       <span v-if="note.source" class="source">{{ note.source }}</span>
       <div v-if="note.tags?.length" class="tags">
         <span v-for="tag in note.tags.slice(0, 2)" :key="tag" class="tag">

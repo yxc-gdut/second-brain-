@@ -14,7 +14,7 @@
       </button>
     </header>
 
-    <main class="detail-content" v-if="note">
+    <main v-if="note" class="detail-content">
       <div class="note-meta">
         <span class="category-badge" :class="note.category">
           {{ note.category === 'work' ? '💼 工作' : '🏠 私人' }}
@@ -22,7 +22,7 @@
         <span class="note-date">{{ formatDate(note.createdAt) }}</span>
       </div>
 
-      <p class="note-source" v-if="note.source">
+      <p v-if="note.source" class="note-source">
         <span class="source-label">来源：</span>{{ note.source }}
       </p>
 
@@ -30,7 +30,7 @@
         <p class="note-text">{{ note.content }}</p>
       </div>
 
-      <div class="note-tags" v-if="note.tags?.length">
+      <div v-if="note.tags?.length" class="note-tags">
         <span v-for="tag in note.tags" :key="tag" class="tag">{{ tag }}</span>
       </div>
     </main>

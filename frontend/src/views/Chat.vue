@@ -5,7 +5,7 @@
     </header>
 
     <!-- Messages Area -->
-    <main class="messages-container" ref="messagesContainer">
+    <main ref="messagesContainer" class="messages-container">
       <div class="messages-inner">
         <!-- Welcome Message -->
         <div v-if="messages.length === 0" class="welcome-state">
@@ -107,13 +107,13 @@
           type="text"
           class="text-input"
           placeholder="问我任何关于笔记的问题..."
-          @keyup.enter="sendMessage"
           :disabled="loading"
+          @keyup.enter="sendMessage"
         />
         <button
           class="send-btn"
-          @click="sendMessage"
           :disabled="loading || !inputText.trim()"
+          @click="sendMessage"
         >
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

@@ -1,0 +1,2 @@
+*.{vue,ts,tsx,js,jsx} prettier --write
+*.{vue,ts,tsx,js,jsx} eslint --fix
