@@ -1,5 +1,13 @@
 # 更新日志
 
+## 2026-04-22 22:45
+- ✅ 新增代码规范体系：ESLint + Prettier + Husky pre-commit hook
+- ✅ 新增 GitHub Actions CI workflow（lint + type-check + build）
+- ✅ 新增 VS Code 插件推荐和项目级设置
+- ✅ 新增 CLAUDE.md（AI 开发规范指南，供 Cursor 等工具参考）
+- ✅ 新增 CONTRIBUTING.md 协作开发指南
+- ✅ 修复 Chat.vue 中 NoteDetail import 路径错误
+
 ## 2026-04-10 01:22
 - ✅ 启动脚本改用 pm2 管理进程（挂了自动重启）
 - ✅ 配置金山文档同步（wps-doc-cli）
