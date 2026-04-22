@@ -140,7 +140,7 @@ const feishuDoc = {
       // 跳过仅包含---的行（分隔线）
       if (line.trim() === '---') {
         flushText();
-        blocks.push({ block_type: 22 }); // divider
+        blocks.push({ block_type: 22, divider: {} }); // divider
         continue;
       }
 
