@@ -1,5 +1,10 @@
 # 更新日志
 
+## 2026-04-29 22:02
+- ✅ 修复新建笔记后飞书同步不触发的 TODO
+- ✅ 新增笔记异步触发增量同步到飞书（fire-and-forget）
+- ✅ PM2 管理后端进程，开机自启
+
 ## 2026-04-22 22:45
 - ✅ 新增代码规范体系：ESLint + Prettier + Husky pre-commit hook
 - ✅ 新增 GitHub Actions CI workflow（lint + type-check + build）

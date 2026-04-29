@@ -4,9 +4,20 @@
 const Router = require('@koa/router');
 const fs = require('fs').promises;
 const path = require('path');
+const { feishuDoc } = require('../utils/feishu');
 
 const router = new Router({ prefix: '/api' });
 const DATA_DIR = path.join(__dirname, '../../data');
+
+// 飞书文档 token 配置（从环境变量读取，兼容旧硬编码）
+const FEISHU_CONFIGS = {
+  work: {
+    docToken: process.env.FEISHU_WORK_DOC || 'Gzl2dRdy8os6a2xJJhpcLcW1nae'
+  },
+  personal: {
+    docToken: process.env.FEISHU_PERSONAL_DOC || 'JiHqdloiAomKBgxDmr0c09SPnSc'
+  }
+};
 
 /**
  * POST /api/notes
@@ -53,7 +64,8 @@ router.post('/notes', async (ctx) => {
     const newContent = existing + '\n' + entry;
     await fs.writeFile(filePath, newContent, 'utf-8');
     
-    // TODO: 触发飞书同步（异步）
+    // 触发飞书异步增量同步（不阻塞响应）
+    triggerFeishuAsync(note.category, newContent);
     
     ctx.body = { 
       success: true, 
@@ -168,6 +180,41 @@ function parseMarkdown(content, category) {
     });
   }
   return notes.reverse(); // 最新的在前
+}
+
+/**
+ * 异步触发飞书增量同步（fire-and-forget，不阻塞响应）
+ * 原理：读取本地 MD 文件整体内容，feishuDoc.write() 会通过时间戳比对
+ *       自动只追加新增部分，实现增量同步
+ */
+function triggerFeishuAsync(category, content) {
+  const config = FEISHU_CONFIGS[category];
+  if (!config?.docToken) {
+    console.warn(`[Sync] 跳过 ${category}：未配置飞书 docToken`);
+    return;
+  }
+
+  // 获取上次同步时间，用于 feishuDoc 判断增量范围
+  const lastSyncTime = feishuDoc.getLastSyncTime(category);
+  const newContent = feishuDoc.parseNewContent(content, lastSyncTime);
+
+  if (!newContent || !newContent.trim()) {
+    console.log(`[Sync] ${category} 无新增内容需要同步`);
+    return;
+  }
+
+  feishuDoc.write({ doc_token: config.docToken, content: newContent })
+    .then(result => {
+      if (result.success) {
+        feishuDoc.setLastSyncTime(category, new Date().toISOString());
+        console.log(`[Sync] ✅ ${category} 增量同步完成`);
+      } else {
+        console.error(`[Sync] ❌ ${category} 增量同步失败: ${result.error}`);
+      }
+    })
+    .catch(err => {
+      console.error(`[Sync] ❌ ${category} 同步异常:`, err.message);
+    });
 }
 
 module.exports = router;
