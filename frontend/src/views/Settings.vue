@@ -7,7 +7,7 @@
     <main class="settings-content">
       <!-- Quick Actions -->
       <section class="quick-actions">
-        <button class="quick-action-btn" @click="goToText">
+        <button class="kd-card quick-action-btn" @click="goToText">
           <div class="qa-icon">
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -19,7 +19,7 @@
           </svg>
         </button>
 
-        <button class="quick-action-btn" @click="syncToFeishu">
+        <button class="kd-card quick-action-btn" @click="syncToFeishu">
           <div class="qa-icon sync">
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -35,17 +35,17 @@
       <!-- Data Section -->
       <section class="settings-section">
         <h2 class="section-title">数据</h2>
-        <div class="card">
+        <div class="kd-card">
           <div class="stat-row">
             <span class="stat-label">工作笔记</span>
             <span class="stat-value">{{ stats.work }} 条</span>
           </div>
-          <div class="divider"></div>
+          <div class="kd-divider"></div>
           <div class="stat-row">
             <span class="stat-label">私人笔记</span>
             <span class="stat-value">{{ stats.personal }} 条</span>
           </div>
-          <div class="divider"></div>
+          <div class="kd-divider"></div>
           <div class="stat-row">
             <span class="stat-label">标签总数</span>
             <span class="stat-value">{{ stats.tags }} 个</span>
@@ -56,21 +56,21 @@
       <!-- Export Section -->
       <section class="settings-section">
         <h2 class="section-title">导出</h2>
-        <div class="card">
+        <div class="kd-card">
           <button class="list-btn" @click="exportData('work')">
             <span>导出工作笔记</span>
             <svg class="btn-arrow w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
           </button>
-          <div class="divider"></div>
+          <div class="kd-divider"></div>
           <button class="list-btn" @click="exportData('personal')">
             <span>导出私人笔记</span>
             <svg class="btn-arrow w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
           </button>
-          <div class="divider"></div>
+          <div class="kd-divider"></div>
           <button class="list-btn" @click="exportData('all')">
             <span>导出全部数据</span>
             <svg class="btn-arrow w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -83,15 +83,15 @@
       <!-- About Section -->
       <section class="settings-section">
         <h2 class="section-title">关于</h2>
-        <div class="card">
+        <div class="kd-card">
           <div class="list-item static">
             <span>版本</span>
-            <span class="text-secondary">1.0.0</span>
+            <span class="text-tertiary">1.0.0</span>
           </div>
-          <div class="divider"></div>
+          <div class="kd-divider"></div>
           <div class="list-item static">
             <span>第二大脑</span>
-            <span class="text-secondary">Powered by AI</span>
+            <span class="text-tertiary">Powered by AI</span>
           </div>
         </div>
       </section>
@@ -152,49 +152,56 @@ function showToastMessage(msg: string) {
 </script>
 
 <style scoped>
+/* ========== Layout ========== */
 .settings-page {
   min-height: 100vh;
-  background: var(--color-black);
-  padding-top: 48px;
+  background: var(--kd-color-background-base);
+  padding-top: 0;
 }
 
 .settings-header {
-  padding: 16px 22px;
+  padding: 32px 24px 16px;
   text-align: center;
   position: sticky;
-  top: 48px;
+  top: 0;
   z-index: 100;
+  background: var(--kd-color-background-base);
 }
 
 .settings-title {
-  font-family: var(--font-display);
-  font-size: 18px;
+  font-size: var(--kd-font-size-xl, 20px);
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--kd-color-text-primary);
+  line-height: 32px;
 }
 
 .settings-content {
-  padding: 16px 22px 100px;
+  padding: 0 24px 100px;
   max-width: 600px;
   margin: 0 auto;
 }
 
 .settings-section {
-  margin-top: 32px;
+  margin-top: 24px;
 }
 
 .section-title {
-  font-family: var(--font-text);
-  font-size: 13px;
+  font-size: var(--kd-font-size-base, 14px);
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
-  margin-bottom: 10px;
+  color: var(--kd-color-text-secondary);
+  margin-bottom: 12px;
   padding-left: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-/* Quick Actions */
+/* ========== KDesign Card ========== */
+.kd-card {
+  background: var(--kd-color-background-middle, #fff);
+  border-radius: var(--kd-radius-lg, 8px);
+  box-shadow: var(--kd-shadow-sm, 0 1px 4px rgba(26,26,26,.10));
+  overflow: hidden;
+}
+
+/* ========== Quick Actions ========== */
 .quick-actions {
   display: flex;
   flex-direction: column;
@@ -204,32 +211,30 @@ function showToastMessage(msg: string) {
 .quick-action-btn {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 16px 18px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-large);
+  gap: 12px;
+  padding: 16px;
+  border: none;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background var(--kd-time-fast, 120ms) var(--kd-easing-ease, cubic-bezier(.25,.10,.25,1.00));
   width: 100%;
   text-align: left;
+  border-radius: var(--kd-radius-lg, 8px);
 }
 
 .quick-action-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: var(--kd-color-state-hover, rgba(0,0,0,0.04));
 }
 
 .quick-action-btn:active {
-  transform: scale(0.99);
+  background: var(--kd-color-state-pressed, rgba(0,0,0,0.08));
 }
 
 .qa-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-micro);
-  background: rgba(0, 113, 227, 0.15);
-  color: var(--color-apple-blue);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--kd-radius-md, 6px);
+  background: var(--kd-color-info-light, #ECF4FF);
+  color: var(--kd-color-info-normal, #0A6CFF);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -237,144 +242,135 @@ function showToastMessage(msg: string) {
 }
 
 .qa-icon.sync {
-  background: rgba(48, 200, 100, 0.15);
-  color: #30c864;
+  background: var(--kd-color-success-light, #E9F6E3);
+  color: var(--kd-color-success-normal, #418F1F);
 }
 
 .qa-text {
   flex: 1;
-  font-family: var(--font-text);
-  font-size: 15px;
-  color: var(--color-white);
+  font-size: var(--kd-font-size-base, 14px);
+  color: var(--kd-color-text-primary, #0D0D0D);
+  line-height: 22px;
 }
 
 .qa-arrow {
   width: 16px;
   height: 16px;
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--kd-color-icon-secondary, #757575);
   flex-shrink: 0;
 }
 
-/* Card */
-.card {
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: var(--radius-large);
-  overflow: hidden;
-}
-
-/* Stats */
+/* ========== Stats ========== */
 .stat-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 18px;
+  padding: 16px;
 }
 
 .stat-label {
-  font-family: var(--font-text);
-  font-size: 15px;
-  color: var(--color-white);
+  font-size: var(--kd-font-size-base, 14px);
+  color: var(--kd-color-text-primary, #0D0D0D);
+  line-height: 22px;
 }
 
 .stat-value {
-  font-family: var(--font-text);
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: var(--kd-font-size-base, 14px);
+  color: var(--kd-color-text-secondary, #6B6B6B);
+  line-height: 22px;
 }
 
-/* Divider */
-.divider {
+/* ========== KDesign Divider ========== */
+.kd-divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-  margin: 0 18px;
+  background: var(--kd-color-line-light, rgba(13,13,13,0.06));
+  margin: 0 16px;
 }
 
-/* List Buttons */
+/* ========== List Buttons ========== */
 .list-btn {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 16px 18px;
+  padding: 16px;
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background var(--kd-time-fast, 120ms) var(--kd-easing-ease, cubic-bezier(.25,.10,.25,1.00));
   text-align: left;
 }
 
 .list-btn:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--kd-color-state-hover, rgba(0,0,0,0.04));
 }
 
 .list-btn:active {
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--kd-color-state-pressed, rgba(0,0,0,0.08));
 }
 
 .list-btn span {
-  font-family: var(--font-text);
-  font-size: 15px;
-  color: var(--color-white);
+  font-size: var(--kd-font-size-base, 14px);
+  color: var(--kd-color-text-primary, #0D0D0D);
+  line-height: 22px;
 }
 
 .btn-arrow {
   width: 16px;
   height: 16px;
-  color: rgba(255, 255, 255, 0.25);
+  color: var(--kd-color-icon-secondary, #757575);
   flex-shrink: 0;
 }
 
-/* List Item Static */
+/* ========== List Item Static ========== */
 .list-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 18px;
+  padding: 16px;
 }
 
 .list-item span {
-  font-family: var(--font-text);
-  font-size: 15px;
-  color: var(--color-white);
+  font-size: var(--kd-font-size-base, 14px);
+  color: var(--kd-color-text-primary, #0D0D0D);
+  line-height: 22px;
 }
 
-.text-secondary {
-  color: rgba(255, 255, 255, 0.5) !important;
-  font-size: 14px !important;
+.text-tertiary {
+  color: var(--kd-color-text-tertiary, #909090) !important;
 }
 
-/* Toast */
+/* ========== Toast ========== */
 .toast {
   position: fixed;
   bottom: 100px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(20px);
-  color: var(--color-white);
-  padding: 14px 24px;
-  border-radius: var(--radius-pill);
-  font-family: var(--font-text);
-  font-size: 15px;
+  background: var(--kd-color-background-bottom, #fff);
+  color: var(--kd-color-text-primary);
+  padding: 12px 24px;
+  border-radius: var(--kd-radius-lg, 8px);
+  font-size: var(--kd-font-size-base, 14px);
+  line-height: 22px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   z-index: 1000;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--kd-shadow-lg, 0 12px 32px rgba(26,26,26,.08));
 }
 
 .toast svg {
-  color: #30c864;
+  color: var(--kd-color-success-normal, #418F1F);
 }
 
 .toast-enter-active,
 .toast-leave-active {
-  transition: all 0.3s ease;
+  transition: all 240ms var(--kd-easing-ease, cubic-bezier(.25,.10,.25,1.00));
 }
 
 .toast-enter-from,
 .toast-leave-to {
   opacity: 0;
-  transform: translateX(-50%) translateY(20px);
+  transform: translateX(-50%) translateY(12px);
 }
 </style>

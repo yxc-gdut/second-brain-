@@ -1,5 +1,16 @@
 # 更新日志
 
+## 2026-05-04
+- ✅ **设计系统迁移：Apple Design → KDesign**
+  - 新增 `kdesign-tokens.css` 全局设计变量（颜色、字号、字重、圆角、阴影、动效等）
+  - 移除 `apple.css` 和 `design.md`（Apple Design 参考文档）
+  - 所有组件（App.vue、Home、Chat、NoteDetail、Preview、Settings、CaptureButton、CategorySelector、NoteCard、WelcomeItem）统一迁移至 KDesign Token
+  - 统一字体系统、间距、边框、圆角、阴影、交互状态
+  - 重构按钮（Primary/Secondary/Light/Danger）、Tag、Modal、Input、Loading 等基础组件样式
+  - 骨架屏改用 KDesign pulse 动画
+  - 聊天页头像改为文字头像（AI/我），消息气泡改用 KDesign 风格
+- ✅ 新增后端健康检查脚本 `backend/health-check.sh`（PM2 自动重启）
+
 ## 2026-04-29 22:02
 - ✅ 修复新建笔记后飞书同步不触发的 TODO
 - ✅ 新增笔记异步触发增量同步到飞书（fire-and-forget）

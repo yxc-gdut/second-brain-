@@ -14,14 +14,14 @@
 
 <style scoped>
 .item {
-  margin-top: 2rem;
+  margin-top: 16px;
   display: flex;
   position: relative;
 }
 
 .details {
   flex: 1;
-  margin-left: 1rem;
+  margin-left: 12px;
 }
 
 i {
@@ -30,37 +30,36 @@ i {
   place-content: center;
   width: 32px;
   height: 32px;
-
-  color: var(--color-text);
+  color: var(--kd-color-icon-primary, #333333);
 }
 
 h3 {
-  font-size: 1.2rem;
+  font-size: var(--kd-font-size-middle, 16px);
   font-weight: 500;
-  margin-bottom: 0.4rem;
-  color: var(--color-heading);
+  margin-bottom: 4px;
+  color: var(--kd-color-text-primary, #0D0D0D);
 }
 
 @media (min-width: 1024px) {
   .item {
     margin-top: 0;
-    padding: 0.4rem 0 1rem calc(var(--section-gap) / 2);
+    padding: 4px 0 12px calc(24px / 2);
   }
 
   i {
     top: calc(50% - 25px);
     left: -26px;
     position: absolute;
-    border: 1px solid var(--color-border);
-    background: var(--color-background);
-    border-radius: 8px;
+    border: 1px solid var(--kd-color-line-light, rgba(13,13,13,0.06));
+    background: var(--kd-color-fill-base, #FFFFFF);
+    border-radius: var(--kd-radius-lg, 8px);
     width: 50px;
     height: 50px;
   }
 
   .item:before {
     content: ' ';
-    border-left: 1px solid var(--color-border);
+    border-left: 1px solid var(--kd-color-line-light, rgba(13,13,13,0.06));
     position: absolute;
     left: 0;
     bottom: calc(50% + 25px);
@@ -69,7 +68,7 @@ h3 {
 
   .item:after {
     content: ' ';
-    border-left: 1px solid var(--color-border);
+    border-left: 1px solid var(--kd-color-line-light, rgba(13,13,13,0.06));
     position: absolute;
     left: 0;
     top: calc(50% + 25px);

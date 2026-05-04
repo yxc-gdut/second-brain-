@@ -27,19 +27,16 @@ const config = {
     label: '拍照', 
     icon: CameraIcon, 
     description: 'OCR 文字识别',
-    gradient: 'linear-gradient(135deg, #ff3b30 0%, #ff6b5b 100%)'
   },
   voice: { 
     label: '语音', 
     icon: MicrophoneIcon, 
     description: '语音转文字',
-    gradient: 'linear-gradient(135deg, #ff9500 0%, #ffb347 100%)'
   },
   text: { 
     label: '文字', 
     icon: PencilIcon, 
     description: '快速记录',
-    gradient: 'linear-gradient(135deg, #0071e3 0%, #5ac8fa 100%)'
   }
 }
 
@@ -61,109 +58,64 @@ const handleClick = () => {
 .capture-btn {
   width: 100%;
   max-width: 320px;
-  padding: 28px 24px;
-  border-radius: var(--radius-large);
-  border: none;
+  padding: 24px;
+  border-radius: var(--kd-radius-lg, 8px);
+  border: 1px solid var(--kd-color-line-light, rgba(13,13,13,0.06));
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  transition: all 0.25s ease;
-  position: relative;
-  overflow: hidden;
+  transition: all var(--kd-time-fast, 120ms) var(--kd-easing-ease);
+  background: var(--kd-color-fill-base, #FFFFFF);
 }
 
-.capture-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-}
-
-.capture-btn:hover::before {
-  opacity: 1;
+.capture-btn:hover {
+  box-shadow: var(--kd-shadow-md, 0 1px 4px rgba(26,26,26,.14));
+  border-color: var(--kd-color-line-regular, rgba(13,13,13,0.12));
 }
 
 .capture-btn:active {
-  transform: scale(0.97);
-}
-
-.capture-btn.camera {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  color: white;
-}
-
-.capture-btn.camera::before {
-  background: linear-gradient(135deg, rgba(255, 59, 48, 0.15) 0%, rgba(255, 107, 91, 0.15) 100%);
-}
-
-.capture-btn.voice {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  color: white;
-}
-
-.capture-btn.voice::before {
-  background: linear-gradient(135deg, rgba(255, 149, 0, 0.15) 0%, rgba(255, 179, 71, 0.15) 100%);
-}
-
-.capture-btn.text {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  color: white;
-}
-
-.capture-btn.text::before {
-  background: linear-gradient(135deg, rgba(0, 113, 227, 0.15) 0%, rgba(90, 200, 250, 0.15) 100%);
+  opacity: var(--kd-opacity-disabled, 0.4);
 }
 
 .btn-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--kd-radius-full, 999px);
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
-  z-index: 1;
 }
 
 .capture-btn.camera .btn-icon {
-  background: linear-gradient(135deg, #ff3b30 0%, #ff6b5b 100%);
-  box-shadow: 0 8px 32px rgba(255, 59, 48, 0.3);
+  background: var(--kd-color-error-light, #FFF0F1);
+  color: var(--kd-color-error-normal, #E12F3C);
 }
 
 .capture-btn.voice .btn-icon {
-  background: linear-gradient(135deg, #ff9500 0%, #ffb347 100%);
-  box-shadow: 0 8px 32px rgba(255, 149, 0, 0.3);
+  background: var(--kd-color-warning-light, #FEF1EA);
+  color: var(--kd-color-warning-normal, #E2651A);
 }
 
 .capture-btn.text .btn-icon {
-  background: linear-gradient(135deg, #0071e3 0%, #5ac8fa 100%);
-  box-shadow: 0 8px 32px rgba(0, 113, 227, 0.3);
+  background: var(--kd-color-info-light, #ECF4FF);
+  color: var(--kd-color-info-normal, #0A6CFF);
 }
 
 .btn-icon svg {
-  color: white;
+  width: 24px;
+  height: 24px;
 }
 
 .btn-label {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.374px;
-  position: relative;
-  z-index: 1;
+  font-size: var(--kd-font-size-large, 18px);
+  font-weight: var(--kd-font-weight-bold, 600);
+  color: var(--kd-color-text-primary, #0D0D0D);
 }
 
 .btn-desc {
-  font-family: var(--font-text);
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
-  position: relative;
-  z-index: 1;
+  font-size: var(--kd-font-size-small, 12px);
+  color: var(--kd-color-text-tertiary, #909090);
 }
 </style>

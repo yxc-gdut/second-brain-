@@ -66,24 +66,24 @@ function handleClick() {
 
 <style scoped>
 .note-card {
-  background: var(--color-white);
-  border-radius: var(--radius-large);
-  padding: 20px;
+  background: var(--kd-color-fill-base, #FFFFFF);
+  border-radius: var(--kd-radius-lg, 8px);
+  padding: 16px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: none;
+  transition: box-shadow var(--kd-time-fast, 120ms) var(--kd-easing-ease);
+  border: 1px solid var(--kd-color-line-light, rgba(13,13,13,0.06));
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .note-card:hover {
-  box-shadow: var(--shadow-card);
-  transform: translateY(-2px);
+  box-shadow: var(--kd-shadow-md, 0 1px 4px rgba(26,26,26,.14));
+  border-color: var(--kd-color-line-regular, rgba(13,13,13,0.12));
 }
 
 .note-card:active {
-  transform: scale(0.99);
+  opacity: var(--kd-opacity-disabled, 0.4);
 }
 
 .card-header {
@@ -93,55 +93,50 @@ function handleClick() {
 }
 
 .category-badge {
-  font-size: 16px;
+  font-size: var(--kd-font-size-middle, 16px);
 }
 
 .date {
-  font-family: var(--font-text);
-  font-size: 13px;
-  color: var(--color-text-secondary);
+  font-size: var(--kd-font-size-small, 12px);
+  color: var(--kd-color-text-tertiary, #909090);
 }
 
 .note-content {
-  font-family: var(--font-text);
-  font-size: 15px;
-  color: var(--color-near-black);
-  line-height: 1.55;
+  font-size: var(--kd-font-size-base, 14px);
+  color: var(--kd-color-text-primary, #0D0D0D);
+  line-height: 22px;
 }
 
 .card-footer {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
 .source {
-  font-family: var(--font-text);
-  font-size: 13px;
-  color: var(--color-apple-blue);
+  font-size: var(--kd-font-size-small, 12px);
+  color: var(--kd-color-text-public, #0A6CFF);
 }
 
 .tags {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   flex-wrap: wrap;
   margin-left: auto;
 }
 
 .tag {
-  font-family: var(--font-text);
-  font-size: 12px;
-  padding: 4px 10px;
-  background: var(--color-light-gray);
-  color: rgba(0, 0, 0, 0.65);
-  border-radius: var(--radius-pill);
+  font-size: var(--kd-font-size-small, 12px);
+  padding: 2px 8px;
+  background: var(--kd-color-fill-regular, #EEEEEE);
+  color: var(--kd-color-text-secondary, #6B6B6B);
+  border-radius: var(--kd-radius-sm, 4px);
 }
 
 .tag-more {
-  font-family: var(--font-text);
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  padding: 4px 6px;
+  font-size: var(--kd-font-size-small, 12px);
+  color: var(--kd-color-text-tertiary, #909090);
+  padding: 2px 4px;
 }
 </style>

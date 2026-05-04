@@ -1,7 +1,7 @@
 <template>
   <div class="app">
-    <!-- Apple Glass Navigation -->
-    <nav class="apple-nav">
+    <!-- Navigation -->
+    <nav class="app-nav">
       <div class="nav-content">
         <div class="nav-logo">
           <span class="logo-text">第二大脑</span>
@@ -176,32 +176,29 @@ watch([searchQuery, activeFilter], () => {
 <style scoped>
 .app {
   min-height: 100vh;
-  background: var(--color-black);
-  color: var(--color-white);
+  background: var(--kd-color-background-base, #F0F0F0);
 }
 
-/* Apple Glass Navigation */
-.apple-nav {
+/* Navigation */
+.app-nav {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   height: 48px;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  background: var(--kd-color-fill-base, #fff);
   z-index: 1000;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--kd-color-line-light, rgba(13,13,13,0.06));
 }
 
 .nav-content {
-  max-width: var(--max-width);
+  max-width: 1200px;
   margin: 0 auto;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 22px;
+  padding: 0 24px;
 }
 
 .nav-logo {
@@ -210,10 +207,9 @@ watch([searchQuery, activeFilter], () => {
 }
 
 .logo-text {
-  font-family: var(--font-display);
-  font-size: 18px;
+  font-size: var(--kd-font-size-large, 18px);
   font-weight: 600;
-  color: var(--color-white);
+  color: var(--kd-color-text-primary, #0D0D0D);
   letter-spacing: -0.374px;
 }
 
@@ -223,30 +219,29 @@ watch([searchQuery, activeFilter], () => {
 }
 
 .nav-link {
-  font-family: var(--font-text);
-  font-size: 12px;
+  font-size: var(--kd-font-size-sub-base, 13px);
   font-weight: 400;
-  color: var(--color-white);
+  color: var(--kd-color-text-secondary, #6B6B6B);
   text-decoration: none;
-  opacity: 0.8;
-  transition: opacity 0.2s;
+  transition: color var(--kd-time-fast, 120ms) var(--kd-easing-ease);
   position: relative;
+  padding-bottom: 2px;
 }
 
 .nav-link:hover,
 .nav-link.active {
-  opacity: 1;
+  color: var(--kd-color-text-primary, #0D0D0D);
 }
 
 .nav-link.active::after {
   content: '';
   position: absolute;
-  bottom: -4px;
+  bottom: -14px;
   left: 50%;
   transform: translateX(-50%);
   width: 20px;
   height: 2px;
-  background: var(--color-white);
+  background: var(--kd-color-public-normal, #0A6CFF);
   border-radius: 1px;
 }
 
@@ -258,18 +253,17 @@ watch([searchQuery, activeFilter], () => {
 .nav-icon-btn {
   background: transparent;
   border: none;
-  color: var(--color-white);
-  opacity: 0.8;
+  color: var(--kd-color-icon-secondary, #757575);
   cursor: pointer;
   padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.2s;
+  transition: color var(--kd-time-fast, 120ms) var(--kd-easing-ease);
 }
 
 .nav-icon-btn:hover {
-  opacity: 1;
+  color: var(--kd-color-icon-primary, #0D0D0D);
 }
 
 /* Search Overlay */
@@ -279,23 +273,30 @@ watch([searchQuery, activeFilter], () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(240, 240, 240, 0.6);
   z-index: 1001;
+  animation: fadeIn var(--kd-time-fast, 120ms) var(--kd-easing-ease);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .search-panel {
   max-width: 600px;
   margin: 80px auto 0;
-  padding: 0 22px;
+  padding: 24px;
+  background: var(--kd-color-fill-base, #fff);
+  border-radius: var(--kd-radius-xl, 12px);
+  box-shadow: var(--kd-shadow-lg);
 }
 
 .search-input-wrapper {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-comfortable);
+  background: var(--kd-color-fill-light, #F5F5F5);
+  border-radius: var(--kd-radius-md, 6px);
   padding: 12px 16px;
   gap: 12px;
 }
@@ -303,8 +304,7 @@ watch([searchQuery, activeFilter], () => {
 .search-icon {
   width: 20px;
   height: 20px;
-  color: var(--color-white);
-  opacity: 0.5;
+  color: var(--kd-color-text-tertiary, #909090);
   flex-shrink: 0;
 }
 
@@ -313,24 +313,26 @@ watch([searchQuery, activeFilter], () => {
   background: transparent;
   border: none;
   outline: none;
-  font-family: var(--font-text);
-  font-size: 17px;
-  color: var(--color-white);
-  letter-spacing: -0.374px;
+  font-size: 14px;
+  color: var(--kd-color-text-primary, #0D0D0D);
 }
 
 .search-input-field::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--kd-color-text-tertiary, #909090);
 }
 
 .search-cancel {
   background: transparent;
   border: none;
-  color: var(--color-apple-blue);
-  font-family: var(--font-text);
-  font-size: 17px;
+  color: var(--kd-color-text-public, #0A6CFF);
+  font-size: 14px;
   cursor: pointer;
   padding: 0;
+  transition: opacity var(--kd-time-fast, 120ms) var(--kd-easing-ease);
+}
+
+.search-cancel:hover {
+  opacity: 0.72;
 }
 
 /* Search Filters */
@@ -344,28 +346,29 @@ watch([searchQuery, activeFilter], () => {
 
 .filter-pill {
   padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--kd-color-fill-regular, #EBEBEB);
   border: none;
-  border-radius: var(--radius-pill);
-  color: var(--color-white);
-  font-family: var(--font-text);
-  font-size: 14px;
+  border-radius: var(--kd-radius-sm, 4px);
+  color: var(--kd-color-text-secondary, #6B6B6B);
+  font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s;
+  transition: background var(--kd-time-fast, 120ms) var(--kd-easing-ease),
+              color var(--kd-time-fast, 120ms) var(--kd-easing-ease);
 }
 
 .filter-pill:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--kd-color-fill-light, #F5F5F5);
 }
 
 .filter-pill.active {
-  background: var(--color-apple-blue);
+  background: var(--kd-color-public-light, #E6F0FF);
+  color: var(--kd-color-text-public, #0A6CFF);
 }
 
 /* Search Results */
 .search-results {
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 .search-loading {
@@ -378,7 +381,7 @@ watch([searchQuery, activeFilter], () => {
 .loading-dot {
   width: 8px;
   height: 8px;
-  background: var(--color-white);
+  background: var(--kd-color-text-tertiary, #909090);
   border-radius: 50%;
   animation: bounce 1.4s infinite ease-in-out both;
 }
@@ -398,20 +401,21 @@ watch([searchQuery, activeFilter], () => {
 }
 
 .result-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius-large);
+  background: var(--kd-color-fill-base, #fff);
+  border: 1px solid var(--kd-color-line-light, rgba(13,13,13,0.06));
+  border-radius: var(--kd-radius-lg, 8px);
   padding: 16px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: box-shadow var(--kd-time-fast, 120ms) var(--kd-easing-ease);
 }
 
 .result-card:hover {
-  background: rgba(255, 255, 255, 0.1);
+  box-shadow: var(--kd-shadow-sm);
 }
 
 .result-content {
-  font-size: 15px;
-  color: var(--color-white);
+  font-size: 14px;
+  color: var(--kd-color-text-primary, #0D0D0D);
   line-height: 1.5;
   margin-bottom: 8px;
 }
@@ -420,8 +424,8 @@ watch([searchQuery, activeFilter], () => {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  color: var(--kd-color-text-tertiary, #909090);
 }
 
 .result-category {
@@ -432,13 +436,13 @@ watch([searchQuery, activeFilter], () => {
 .search-hint {
   text-align: center;
   padding: 60px 20px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--kd-color-text-tertiary, #909090);
 }
 
 /* Page Transitions */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity var(--kd-time-fast, 120ms) var(--kd-easing-ease);
 }
 
 .fade-enter-from,
@@ -451,9 +455,14 @@ watch([searchQuery, activeFilter], () => {
   .nav-links {
     gap: 20px;
   }
-  
+
   .nav-link {
-    font-size: 11px;
+    font-size: 12px;
+  }
+
+  .search-panel {
+    margin: 56px 12px 0;
+    padding: 16px;
   }
 }
 </style>

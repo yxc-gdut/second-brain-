@@ -1,4 +1,4 @@
-import './assets/styles/apple.css'
+/* apple.css 已迁移到 kdesign-tokens.css */
 import './assets/styles/main.css'
 
 import { createApp } from 'vue'

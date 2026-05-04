@@ -1,10 +1,10 @@
 <template>
   <div class="preview-page">
-    <!-- Header -->
+    <!-- Header: 白底 56px，返回(Light) + 标题 + 保存(Primary) -->
     <header class="preview-header">
       <button class="back-btn" @click="goBack">
-        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
+        <svg class="back-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </button>
       <h1 class="header-title">{{ headerTitle }}</h1>
@@ -13,33 +13,33 @@
       </button>
     </header>
 
-    <!-- Preview Content -->
+    <!-- Content -->
     <main class="preview-content">
-      <!-- Source Input -->
-      <div class="input-section">
-        <label class="input-label">来源</label>
+      <!-- 来源输入 -->
+      <div class="form-section">
+        <label class="form-label">来源</label>
         <input
           v-model="source"
           type="text"
-          class="text-input"
+          class="kd-input"
           placeholder="书籍、公众号、小红书等..."
         />
       </div>
 
-      <!-- Content Input -->
-      <div class="input-section">
-        <label class="input-label">内容</label>
+      <!-- 内容编辑 -->
+      <div class="form-section">
+        <label class="form-label">内容</label>
         <textarea
           v-model="content"
-          class="textarea-input"
+          class="kd-textarea"
           placeholder="记录你的想法..."
-          rows="6"
+          rows="5"
         ></textarea>
       </div>
 
-      <!-- Category Selector -->
-      <div class="input-section">
-        <label class="input-label">分类</label>
+      <!-- 分类选择 -->
+      <div class="form-section">
+        <label class="form-label">分类</label>
         <div class="category-options">
           <button
             class="category-btn"
@@ -60,48 +60,66 @@
         </div>
       </div>
 
-      <!-- Tags (if any AI suggestions) -->
-      <div v-if="suggestedTags.length > 0" class="input-section">
-        <label class="input-label">推荐标签</label>
+      <!-- 推荐标签 (KDesign Tag 风格) -->
+      <div v-if="suggestedTags.length > 0" class="form-section">
+        <label class="form-label">推荐标签</label>
         <div class="tags-list">
           <button
             v-for="tag in suggestedTags"
             :key="tag"
-            class="tag-btn"
+            class="kd-tag"
             :class="{ selected: selectedTags.includes(tag) }"
             @click="toggleTag(tag)"
           >
-            {{ tag }}
+            <span>{{ tag }}</span>
+            <svg
+              v-if="selectedTags.includes(tag)"
+              class="tag-close-icon"
+              viewBox="0 0 16 16"
+              fill="none"
+            >
+              <path d="M11 5L5 11M5 5L11 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
           </button>
+        </div>
+      </div>
+
+      <!-- AI 分析结果区域 -->
+      <div v-if="false" class="ai-result-card">
+        <div class="ai-result-header">
+          <span class="ai-result-label">AI 分析结果</span>
+        </div>
+        <div class="ai-result-body">
+          <p class="ai-result-text">分析内容将在此展示...</p>
         </div>
       </div>
     </main>
 
-    <!-- Bottom Action -->
+    <!-- 底部保存栏 -->
     <footer class="preview-footer">
       <button class="action-btn" :disabled="!canSave" @click="saveNote">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        <svg class="action-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M13 4L6 11L3 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         保存笔记
       </button>
     </footer>
 
-    <!-- Save Success Toast -->
+    <!-- 保存成功 Toast -->
     <transition name="toast">
       <div v-if="showSuccess" class="toast success">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        <svg class="toast-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M13 4L6 11L3 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         笔记已保存
       </div>
     </transition>
 
-    <!-- Error Toast -->
+    <!-- 错误 Toast -->
     <transition name="toast">
       <div v-if="showError" class="toast error">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        <svg class="toast-icon" viewBox="0 0 16 16" fill="none">
+          <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
         {{ errorMessage }}
       </div>
@@ -191,289 +209,374 @@ async function saveNote() {
 <style scoped>
 .preview-page {
   min-height: 100vh;
-  background: var(--color-black);
-  padding-top: 48px;
+  background: var(--kd-color-background-base);
+  padding-top: 56px;
   display: flex;
   flex-direction: column;
 }
 
-/* Header */
+/* ========== Header ========== */
 .preview-header {
   position: fixed;
-  top: 48px;
+  top: 0;
   left: 0;
   right: 0;
   height: 56px;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(20px);
+  background: var(--kd-color-fill-base);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
   z-index: 100;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--kd-color-line-light);
 }
 
 .back-btn {
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: none;
-  color: var(--color-apple-blue);
+  border: 1px solid var(--kd-color-line-regular);
+  border-radius: var(--kd-radius-md);
+  color: var(--kd-color-text-primary);
   cursor: pointer;
-  border-radius: 50%;
-  transition: background 0.2s;
+  transition: all var(--kd-time-fast) var(--kd-easing-ease);
 }
 
 .back-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--kd-color-state-hover);
+  border-color: var(--kd-color-line-medium);
+}
+
+.back-btn:active {
+  background: var(--kd-color-state-pressed);
+}
+
+.back-icon {
+  width: 16px;
+  height: 16px;
 }
 
 .header-title {
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--color-white);
+  font-size: var(--kd-font-size-middle);
+  font-weight: var(--kd-font-weight-bold);
+  color: var(--kd-color-text-primary);
+  line-height: 24px;
 }
 
 .save-btn {
-  padding: 8px 16px;
-  background: var(--color-apple-blue);
+  height: 32px;
+  padding: 0 16px;
+  background: var(--kd-color-public-normal);
   border: none;
-  border-radius: var(--radius-pill);
-  color: white;
-  font-family: var(--font-text);
-  font-size: 15px;
-  font-weight: 500;
+  border-radius: var(--kd-radius-md);
+  color: var(--kd-color-text-white);
+  font-size: var(--kd-font-size-sub-base);
+  font-weight: var(--kd-font-weight-regular);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--kd-time-fast) var(--kd-easing-ease);
+  min-width: 72px;
 }
 
 .save-btn:hover:not(:disabled) {
-  background: #0077ed;
+  background: var(--kd-color-public-hover);
+}
+
+.save-btn:active:not(:disabled) {
+  background: var(--kd-color-public-pressed);
 }
 
 .save-btn:disabled {
-  background: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.5);
+  opacity: var(--kd-opacity-disabled);
   cursor: not-allowed;
 }
 
-/* Content */
+/* ========== Content ========== */
 .preview-content {
   flex: 1;
-  padding: 72px 22px 100px;
+  padding: 24px 16px 100px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  max-width: 640px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.input-section {
+.form-section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
-.input-label {
-  font-family: var(--font-text);
+.form-label {
   font-size: 14px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-weight: 400;
+  color: var(--kd-color-text-secondary);
+  line-height: 22px;
 }
 
-.text-input,
-.textarea-input {
+/* ========== Input / Textarea (KDesign 风格) ========== */
+.kd-input,
+.kd-textarea {
   width: 100%;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: var(--radius-standard);
-  color: var(--color-white);
-  font-family: var(--font-text);
-  font-size: 16px;
+  padding: 4px 12px;
+  height: 36px;
+  background: var(--kd-color-fill-base);
+  border: 1px solid var(--kd-color-line-regular);
+  border-radius: var(--kd-radius-md);
+  color: var(--kd-color-text-primary);
+  font-size: var(--kd-font-size-sub-base);
+  line-height: 28px;
   outline: none;
-  transition: all 0.2s;
+  transition: border-color var(--kd-time-fast) var(--kd-easing-ease),
+              box-shadow var(--kd-time-fast) var(--kd-easing-ease);
+  box-sizing: border-box;
 }
 
-.text-input::placeholder,
-.textarea-input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+.kd-input::placeholder,
+.kd-textarea::placeholder {
+  color: var(--kd-color-text-tertiary);
 }
 
-.text-input:focus,
-.textarea-input:focus {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.3);
+.kd-input:hover,
+.kd-textarea:hover {
+  border-color: var(--kd-color-line-medium);
 }
 
-.textarea-input {
-  resize: none;
-  min-height: 150px;
-  line-height: 1.6;
+.kd-input:focus,
+.kd-textarea:focus {
+  border-color: var(--kd-color-line-public);
+  box-shadow: var(--kd-shadow-glow-blue);
 }
 
-/* Category */
+.kd-textarea {
+  height: auto;
+  min-height: 120px;
+  padding: 8px 12px;
+  resize: vertical;
+  line-height: 22px;
+}
+
+/* ========== Category (Segmented 风格) ========== */
 .category-options {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 8px;
 }
 
 .category-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-large);
+  gap: 8px;
+  height: 36px;
+  background: var(--kd-color-fill-base);
+  border: 1px solid var(--kd-color-line-regular);
+  border-radius: var(--kd-radius-md);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--kd-time-fast) var(--kd-easing-ease);
 }
 
 .category-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--kd-color-state-hover);
+  border-color: var(--kd-color-line-medium);
 }
 
 .category-btn.active {
-  background: rgba(0, 113, 227, 0.15);
-  border-color: var(--color-apple-blue);
+  background: var(--kd-color-public-light);
+  border-color: var(--kd-color-public-normal);
+}
+
+.category-btn.active .category-text {
+  color: var(--kd-color-public-normal);
 }
 
 .category-icon {
-  font-size: 20px;
+  font-size: 16px;
+  line-height: 1;
 }
 
 .category-text {
-  font-family: var(--font-text);
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--color-white);
+  font-size: var(--kd-font-size-sub-base);
+  font-weight: var(--kd-font-weight-regular);
+  color: var(--kd-color-text-primary);
+  line-height: 20px;
 }
 
-/* Tags */
+/* ========== Tags (KDesign Tag 风格) ========== */
 .tags-list {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.tag-btn {
-  padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: var(--radius-pill);
-  color: var(--color-white);
-  font-family: var(--font-text);
-  font-size: 14px;
+.kd-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 8px;
+  background: var(--kd-color-fill-regular);
+  border: none;
+  border-radius: var(--kd-radius-sm);
+  color: var(--kd-color-text-primary);
+  font-size: var(--kd-font-size-small);
+  font-weight: var(--kd-font-weight-regular);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--kd-time-fast) var(--kd-easing-ease);
+  line-height: 20px;
 }
 
-.tag-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+.kd-tag:hover {
+  background: var(--kd-color-fill-heavy);
 }
 
-.tag-btn.selected {
-  background: var(--color-apple-blue);
-  border-color: var(--color-apple-blue);
+.kd-tag.selected {
+  background: var(--kd-color-public-light);
+  color: var(--kd-color-public-normal);
 }
 
-/* Footer */
+.kd-tag.selected:hover {
+  background: #dce8ff;
+}
+
+.tag-close-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+/* ========== AI 分析结果卡片 ========== */
+.ai-result-card {
+  background: var(--kd-color-fill-base);
+  border-radius: var(--kd-radius-lg);
+  overflow: hidden;
+}
+
+.ai-result-header {
+  padding: 12px 16px 0;
+}
+
+.ai-result-label {
+  font-size: var(--kd-font-size-sub-base);
+  font-weight: var(--kd-font-weight-bold);
+  color: var(--kd-color-text-primary);
+  line-height: 20px;
+}
+
+.ai-result-body {
+  padding: 8px 16px 16px;
+}
+
+.ai-result-text {
+  font-size: var(--kd-font-size-sub-base);
+  color: var(--kd-color-text-primary);
+  line-height: 1.6;
+}
+
+/* ========== Footer ========== */
 .preview-footer {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 16px 22px;
-  padding-bottom: calc(16px + env(safe-area-inset-bottom));
-  background: rgba(0, 0, 0, 0.9);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  background: var(--kd-color-fill-base);
+  border-top: 1px solid var(--kd-color-line-light);
+  display: flex;
+  justify-content: center;
 }
 
 .action-btn {
   width: 100%;
+  max-width: 640px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 16px;
-  background: var(--color-apple-blue);
+  gap: 8px;
+  height: 36px;
+  background: var(--kd-color-public-normal);
   border: none;
-  border-radius: var(--radius-pill);
-  color: white;
-  font-family: var(--font-text);
-  font-size: 17px;
-  font-weight: 500;
+  border-radius: var(--kd-radius-md);
+  color: var(--kd-color-text-white);
+  font-size: var(--kd-font-size-sub-base);
+  font-weight: var(--kd-font-weight-regular);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--kd-time-fast) var(--kd-easing-ease);
 }
 
 .action-btn:hover:not(:disabled) {
-  background: #0077ed;
-  transform: scale(1.01);
+  background: var(--kd-color-public-hover);
 }
 
 .action-btn:active:not(:disabled) {
-  transform: scale(0.99);
+  background: var(--kd-color-public-pressed);
 }
 
 .action-btn:disabled {
-  background: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.5);
+  opacity: var(--kd-opacity-disabled);
   cursor: not-allowed;
 }
 
-/* Toast */
+.action-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* ========== Toast ========== */
 .toast {
   position: fixed;
   bottom: 120px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 14px 24px;
-  border-radius: var(--radius-pill);
-  font-family: var(--font-text);
-  font-size: 15px;
+  padding: 8px 16px;
+  border-radius: var(--kd-radius-md);
+  font-size: var(--kd-font-size-sub-base);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   z-index: 1000;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--kd-shadow-lg);
+  white-space: nowrap;
 }
 
 .toast.success {
-  background: var(--color-near-black);
-  color: var(--color-white);
+  background: var(--kd-color-fill-base);
+  color: var(--kd-color-success-normal);
 }
 
-.toast.success svg {
-  color: #30c864;
+.toast.success .toast-icon {
+  color: var(--kd-color-success-normal);
 }
 
 .toast.error {
-  background: #1a1a1a;
-  color: white;
+  background: var(--kd-color-fill-base);
+  color: var(--kd-color-error-normal);
 }
 
-.toast.error svg {
-  color: #ff3b30;
+.toast.error .toast-icon {
+  color: var(--kd-color-error-normal);
+}
+
+.toast-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .toast-enter-active,
 .toast-leave-active {
-  transition: all 0.3s ease;
+  transition: all var(--kd-time-normal) var(--kd-easing-ease);
 }
 
 .toast-enter-from,
 .toast-leave-to {
   opacity: 0;
-  transform: translateX(-50%) translateY(20px);
+  transform: translateX(-50%) translateY(16px);
 }
 </style>

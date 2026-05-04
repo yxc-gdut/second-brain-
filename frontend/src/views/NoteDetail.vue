@@ -1,25 +1,33 @@
 <template>
   <div class="note-detail-page">
+    <!-- Header Navigation -->
     <header class="detail-header">
-      <button class="back-btn" @click="goBack">
-        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <button class="kd-btn kd-btn--light kd-btn--back" @click="goBack">
+        <svg class="kd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
         </svg>
+        <span class="kd-btn__label">返回</span>
       </button>
       <h1 class="header-title">笔记详情</h1>
-      <button class="delete-btn" @click="confirmDelete">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+      <button class="kd-btn kd-btn--light kd-btn--danger" @click="confirmDelete">
+        <svg class="kd-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
         </svg>
+        <span class="kd-btn__label">删除</span>
       </button>
     </header>
 
+    <!-- Note Content -->
     <main v-if="note" class="detail-content">
       <div class="note-meta">
-        <span class="category-badge" :class="note.category">
+        <span
+          class="kd-tag kd-tag--category"
+          :class="{ 'kd-tag--work': note.category === 'work', 'kd-tag--personal': note.category === 'personal' }"
+        >
           {{ note.category === 'work' ? '💼 工作' : '🏠 私人' }}
         </span>
-        <span class="note-date">{{ formatDate(note.createdAt) }}</span>
+        <span class="kd-tag kd-tag--date">{{ formatDate(note.createdAt) }}</span>
       </div>
 
       <p v-if="note.source" class="note-source">
@@ -31,28 +39,38 @@
       </div>
 
       <div v-if="note.tags?.length" class="note-tags">
-        <span v-for="tag in note.tags" :key="tag" class="tag">{{ tag }}</span>
+        <span v-for="tag in note.tags" :key="tag" class="kd-tag kd-tag--default">{{ tag }}</span>
       </div>
     </main>
 
-    <div v-else-if="loading" class="loading-state">
+    <!-- Loading State -->
+    <div v-else-if="loading" class="state-container">
       <div class="loading-spinner"></div>
-      <p>加载中...</p>
+      <p class="state-text">加载中...</p>
     </div>
 
-    <div v-else class="error-state">
-      <p>笔记不存在</p>
+    <!-- Error State -->
+    <div v-else class="state-container">
+      <p class="state-text">笔记不存在</p>
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <transition name="modal">
-      <div v-if="showDeleteModal" class="modal-overlay" @click="cancelDelete">
-        <div class="modal-content" @click.stop>
-          <h2 class="modal-title">删除笔记</h2>
-          <p class="modal-text">确定要删除这条笔记吗？此操作无法撤销。</p>
-          <div class="modal-actions">
-            <button class="modal-btn cancel" @click="cancelDelete">取消</button>
-            <button class="modal-btn delete" @click="handleDelete">删除</button>
+    <transition name="kd-modal">
+      <div v-if="showDeleteModal" class="kd-modal-mask" @click="cancelDelete">
+        <div class="kd-modal-container" @click.stop>
+          <div class="kd-modal-header">
+            <h2 class="kd-modal-title">删除笔记</h2>
+          </div>
+          <div class="kd-modal-body">
+            <p class="kd-modal-text">确定要删除这条笔记吗？此操作无法撤销。</p>
+          </div>
+          <div class="kd-modal-footer">
+            <button class="kd-btn kd-btn--secondary kd-modal-cancel" @click="cancelDelete">
+              取消
+            </button>
+            <button class="kd-btn kd-btn--primary kd-btn--danger kd-modal-ok" @click="handleDelete">
+              删除
+            </button>
           </div>
         </div>
       </div>
@@ -97,7 +115,7 @@ function cancelDelete() {
 
 async function handleDelete() {
   if (!note.value) return
-  
+
   try {
     await deleteNoteById(note.value.id)
     router.push('/')
@@ -118,132 +136,221 @@ function formatDate(date: string) {
 </script>
 
 <style scoped>
+/* ========================================
+   KDesign Design Tokens
+   ======================================== */
 .note-detail-page {
   min-height: 100vh;
-  background: var(--color-light-gray);
-  padding-top: 48px;
+  background: var(--kd-color-background-base);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+  padding-top: 56px;
 }
 
+/* ========================================
+   Header — white bar, 56px, KDesign border
+   ======================================== */
 .detail-header {
   position: fixed;
-  top: 48px;
+  top: 0;
   left: 0;
   right: 0;
   height: 56px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px);
+  background: var(--kd-color-fill-base);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 8px;
+  padding: 0 16px;
   z-index: 100;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.back-btn {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: none;
-  color: var(--color-apple-blue);
-  cursor: pointer;
-  border-radius: 50%;
-  transition: background 0.2s;
-}
-
-.back-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--kd-color-line-light);
+  box-shadow: var(--kd-shadow-sm);
 }
 
 .header-title {
-  font-family: var(--font-display);
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--color-near-black);
+  font-size: var(--kd-font-size-middle);
+  font-weight: var(--kd-font-weight-bold);
+  color: var(--kd-color-text-primary);
+  line-height: 24px;
+  margin: 0;
 }
 
-.delete-btn {
-  width: 44px;
-  height: 44px;
-  display: flex;
+/* ========================================
+   KDesign Button (pure CSS, light variant)
+   ======================================== */
+.kd-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
-  border: none;
-  color: #ff3b30;
+  gap: 4px;
+  height: 32px;
+  padding: 0 12px;
+  font-size: var(--kd-font-size-sub-base);
+  font-weight: var(--kd-font-weight-regular);
+  font-family: inherit;
+  border: 1px solid var(--kd-color-line-regular);
+  border-radius: var(--kd-radius-md);
   cursor: pointer;
-  border-radius: 50%;
-  transition: background 0.2s;
+  transition: all var(--kd-time-fast) var(--kd-easing-ease);
+  outline: none;
+  user-select: none;
+  white-space: nowrap;
 }
 
-.delete-btn:hover {
-  background: rgba(255, 59, 48, 0.1);
+.kd-btn--light {
+  background: var(--kd-color-fill-base);
+  color: var(--kd-color-text-primary);
 }
 
+.kd-btn--light:hover {
+  background: var(--kd-color-state-hover);
+}
+
+.kd-btn--light:active {
+  background: var(--kd-color-state-pressed);
+}
+
+.kd-btn--secondary {
+  background: var(--kd-color-fill-light);
+  color: var(--kd-color-text-primary);
+  border-color: var(--kd-color-line-regular);
+}
+
+.kd-btn--secondary:hover {
+  background: var(--kd-color-state-hover);
+  border-color: var(--kd-color-line-medium);
+}
+
+.kd-btn--primary {
+  background: var(--kd-color-public-normal);
+  color: var(--kd-color-text-white);
+  border-color: transparent;
+}
+
+.kd-btn--primary:hover {
+  background: var(--kd-color-public-hover);
+}
+
+.kd-btn--primary:active {
+  background: var(--kd-color-public-pressed);
+}
+
+.kd-btn--danger {
+  color: var(--kd-color-error-normal);
+  border-color: var(--kd-color-error-normal);
+  background: var(--kd-color-fill-base);
+}
+
+.kd-btn--danger:hover {
+  background: var(--kd-color-error-light);
+}
+
+.kd-btn--danger.kd-btn--primary {
+  background: var(--kd-color-error-normal);
+  color: var(--kd-color-text-white);
+  border-color: transparent;
+}
+
+.kd-btn--danger.kd-btn--primary:hover {
+  background: var(--kd-color-error-hover);
+}
+
+.kd-btn--danger.kd-btn--primary:active {
+  background: var(--kd-color-error-pressed);
+}
+
+.kd-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.kd-btn__label {
+  line-height: 1;
+}
+
+/* ========================================
+   KDesign Tag
+   ======================================== */
+.kd-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  font-size: var(--kd-font-size-small);
+  font-weight: var(--kd-font-weight-regular);
+  border-radius: var(--kd-radius-sm);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.kd-tag--default {
+  background: var(--kd-color-fill-regular);
+  color: var(--kd-color-text-secondary);
+}
+
+.kd-tag--category {
+  background: var(--kd-color-fill-light);
+  color: var(--kd-color-text-primary);
+}
+
+.kd-tag--work {
+  background: var(--kd-color-public-light);
+  color: var(--kd-color-public-normal);
+}
+
+.kd-tag--personal {
+  background: var(--kd-color-success-light);
+  color: var(--kd-color-success-normal);
+}
+
+.kd-tag--date {
+  background: var(--kd-color-fill-regular);
+  color: var(--kd-color-text-secondary);
+}
+
+/* ========================================
+   Detail Content
+   ======================================== */
 .detail-content {
-  padding: 24px 22px;
-  max-width: var(--max-width);
+  padding: 24px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
 .note-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   margin-bottom: 16px;
 }
 
-.category-badge {
-  font-size: 14px;
-  padding: 6px 14px;
-  border-radius: var(--radius-pill);
-  background: rgba(0, 0, 0, 0.05);
-  color: var(--color-near-black);
-}
-
-.category-badge.work {
-  background: rgba(59, 130, 246, 0.1);
-  color: #2563eb;
-}
-
-.category-badge.personal {
-  background: rgba(16, 185, 129, 0.1);
-  color: #059669;
-}
-
-.note-date {
-  font-family: var(--font-text);
-  font-size: 14px;
-  color: var(--color-text-secondary);
-}
-
 .note-source {
-  font-family: var(--font-text);
-  font-size: 15px;
-  color: var(--color-apple-blue);
-  margin-bottom: 24px;
+  font-size: var(--kd-font-size-base);
+  color: var(--kd-color-text-public);
+  margin-bottom: 16px;
+  line-height: 22px;
 }
 
 .source-label {
-  color: var(--color-text-secondary);
+  color: var(--kd-color-text-secondary);
 }
 
 .note-body {
-  background: var(--color-white);
-  border-radius: var(--radius-large);
+  background: var(--kd-color-fill-base);
+  border-radius: var(--kd-radius-xl);
   padding: 24px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--kd-shadow-sm);
 }
 
 .note-text {
-  font-family: var(--font-text);
-  font-size: 16px;
-  color: var(--color-near-black);
-  line-height: 1.7;
+  font-size: var(--kd-font-size-base);
+  color: var(--kd-color-text-primary);
+  line-height: 1.6;
   white-space: pre-wrap;
+  margin: 0;
 }
 
 .note-tags {
@@ -252,132 +359,120 @@ function formatDate(date: string) {
   gap: 8px;
 }
 
-.tag {
-  font-family: var(--font-text);
-  font-size: 13px;
-  padding: 6px 14px;
-  background: rgba(0, 0, 0, 0.05);
-  color: rgba(0, 0, 0, 0.6);
-  border-radius: var(--radius-pill);
-}
-
-/* Loading & Error States */
-.loading-state,
-.error-state {
+/* ========================================
+   Loading & Error States
+   ======================================== */
+.state-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 80px 20px;
   gap: 16px;
-  color: var(--color-text-secondary);
+}
+
+.state-text {
+  font-size: var(--kd-font-size-base);
+  color: var(--kd-color-text-tertiary);
+  margin: 0;
 }
 
 .loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid rgba(0, 0, 0, 0.1);
-  border-top-color: var(--color-apple-blue);
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--kd-color-fill-regular);
+  border-top-color: var(--kd-color-public-normal);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: kd-spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+@keyframes kd-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* Modal */
-.modal-overlay {
+/* ========================================
+   KDesign Modal
+   ======================================== */
+.kd-modal-mask {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 22px;
-  z-index: 1000;
+  z-index: 1050;
 }
 
-.modal-content {
-  background: var(--color-white);
-  border-radius: var(--radius-large);
-  padding: 24px;
-  max-width: 320px;
-  width: 100%;
+.kd-modal-container {
+  width: 480px;
+  max-width: calc(100vw - 32px);
+  background: var(--kd-color-background-plate);
+  border-radius: var(--kd-radius-xl);
+  box-shadow: var(--kd-shadow-lg);
+  overflow: hidden;
 }
 
-.modal-title {
-  font-family: var(--font-display);
-  font-size: 19px;
-  font-weight: 600;
-  color: var(--color-near-black);
-  margin-bottom: 8px;
+.kd-modal-header {
+  padding: 24px 24px 0;
 }
 
-.modal-text {
-  font-family: var(--font-text);
-  font-size: 15px;
-  color: var(--color-text-secondary);
-  margin-bottom: 24px;
-  line-height: 1.5;
+.kd-modal-title {
+  font-size: var(--kd-font-size-middle);
+  font-weight: var(--kd-font-weight-bold);
+  color: var(--kd-color-text-primary);
+  line-height: 24px;
+  margin: 0;
 }
 
-.modal-actions {
+.kd-modal-body {
+  padding: 12px 24px 0;
+}
+
+.kd-modal-text {
+  font-size: var(--kd-font-size-base);
+  color: var(--kd-color-text-secondary);
+  line-height: 22px;
+  margin: 0;
+}
+
+.kd-modal-footer {
   display: flex;
-  gap: 12px;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 24px;
 }
 
-.modal-btn {
-  flex: 1;
-  padding: 14px;
-  border-radius: var(--radius-standard);
-  font-family: var(--font-text);
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  border: none;
+/* ========================================
+   Modal Transitions
+   ======================================== */
+.kd-modal-enter-active,
+.kd-modal-leave-active {
+  transition: opacity var(--kd-time-normal) var(--kd-easing-ease);
 }
 
-.modal-btn.cancel {
-  background: rgba(0, 0, 0, 0.08);
-  color: var(--color-near-black);
-}
-
-.modal-btn.cancel:hover {
-  background: rgba(0, 0, 0, 0.12);
-}
-
-.modal-btn.delete {
-  background: #ff3b30;
-  color: white;
-}
-
-.modal-btn.delete:hover {
-  background: #dc2626;
-}
-
-/* Modal Transitions */
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.modal-enter-from,
-.modal-leave-to {
+.kd-modal-enter-from,
+.kd-modal-leave-to {
   opacity: 0;
 }
 
-.modal-enter-active .modal-content,
-.modal-leave-active .modal-content {
-  transition: transform 0.2s ease;
+.kd-modal-enter-active .kd-modal-container,
+.kd-modal-leave-active .kd-modal-container {
+  transition: transform var(--kd-time-normal) var(--kd-easing-ease),
+    opacity var(--kd-time-normal) var(--kd-easing-ease);
 }
 
-.modal-enter-from .modal-content,
-.modal-leave-to .modal-content {
-  transform: scale(0.95);
+.kd-modal-enter-from .kd-modal-container {
+  transform: scale(0.96);
+  opacity: 0;
+}
+
+.kd-modal-leave-to .kd-modal-container {
+  transform: scale(0.96);
+  opacity: 0;
 }
 </style>

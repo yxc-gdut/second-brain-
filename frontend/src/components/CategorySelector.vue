@@ -47,16 +47,13 @@ defineEmits<{
 .category-selector {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .selector-label {
-  font-family: var(--font-text);
-  font-size: 14px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: var(--kd-font-size-base, 14px);
+  font-weight: var(--kd-font-weight-regular, 400);
+  color: var(--kd-color-text-secondary, #6B6B6B);
 }
 
 .category-options {
@@ -69,39 +66,38 @@ defineEmits<{
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-large);
+  gap: 8px;
+  padding: 12px;
+  background: var(--kd-color-fill-base, #fff);
+  border: 1px solid var(--kd-color-line-regular, rgba(13,13,13,0.12));
+  border-radius: var(--kd-radius-md, 6px);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: background var(--kd-time-fast, 120ms) var(--kd-easing-ease),
+              border-color var(--kd-time-fast, 120ms) var(--kd-easing-ease);
 }
 
 .category-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--kd-color-state-hover, rgba(0,0,0,0.04));
 }
 
 .category-btn.active {
-  background: rgba(0, 113, 227, 0.15);
-  border-color: var(--color-apple-blue);
+  background: var(--kd-color-public-light, #ECF4FF);
+  border-color: var(--kd-color-public-normal, #0A6CFF);
 }
 
 .category-icon {
-  font-size: 20px;
+  font-size: var(--kd-font-size-middle, 16px);
 }
 
 .category-text {
-  font-family: var(--font-text);
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--color-white);
+  font-size: var(--kd-font-size-sub-base, 13px);
+  font-weight: var(--kd-font-weight-regular, 400);
+  color: var(--kd-color-text-primary, #0D0D0D);
 }
 
 .ai-suggestion {
-  font-family: var(--font-text);
-  font-size: 13px;
-  color: var(--color-apple-blue);
+  font-size: var(--kd-font-size-small, 12px);
+  color: var(--kd-color-text-public, #0A6CFF);
   margin-top: 4px;
 }
 </style>

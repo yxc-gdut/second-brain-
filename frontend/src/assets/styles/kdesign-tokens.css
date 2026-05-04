@@ -1,0 +1,112 @@
+/* KDesign Token - 全局设计变量 */
+/* 来源：KDesign Design System v4.24 */
+
+:root {
+  /* ===== 主操作色 ===== */
+  --kd-color-public-normal: #0A6CFF;
+  --kd-color-public-hover: #3B89FF;
+  --kd-color-public-pressed: #0059DD;
+  --kd-color-public-light: #ECF4FF;
+
+  /* ===== 品牌色 ===== */
+  --kd-color-brand-normal: #1F69E0;
+  --kd-color-brand-hover: #458BFA;
+  --kd-color-brand-pressed: #1E5FC7;
+  --kd-color-brand-light: #EDF4FF;
+
+  /* ===== 功能色 ===== */
+  --kd-color-success-normal: #418F1F;
+  --kd-color-success-light: #E9F6E3;
+  --kd-color-error-normal: #E12F3C;
+  --kd-color-error-hover: #EF5560;
+  --kd-color-error-pressed: #C72730;
+  --kd-color-error-light: #FFF0F1;
+  --kd-color-warning-normal: #E2651A;
+  --kd-color-warning-light: #FEF1EA;
+  --kd-color-info-normal: #0A6CFF;
+  --kd-color-info-light: #ECF4FF;
+
+  /* ===== AI 色 ===== */
+  --kd-color-ai-normal: rgba(131,80,242,1);
+  --kd-color-ai-hover: rgba(156,117,240,1);
+  --kd-color-ai-pressed: rgba(104,42,239,1);
+  --kd-color-ai-light: rgba(244,239,253,1);
+
+  /* ===== 文字色 ===== */
+  --kd-color-text-primary: #0D0D0D;
+  --kd-color-text-secondary: #6B6B6B;
+  --kd-color-text-tertiary: #909090;
+  --kd-color-text-white: #FFFFFF;
+  --kd-color-text-public: #0A6CFF;
+  --kd-color-text-error: #C72730;
+  --kd-color-text-disable: #909090;
+  --kd-color-icon-primary: #333333;
+  --kd-color-icon-secondary: #757575;
+
+  /* ===== 边框/线条色 ===== */
+  --kd-color-line-light: rgba(13,13,13,0.06);
+  --kd-color-line-regular: rgba(13,13,13,0.12);
+  --kd-color-line-medium: rgba(13,13,13,0.24);
+  --kd-color-line-heavy: rgba(13,13,13,0.48);
+  --kd-color-line-public: #0A6CFF;
+
+  /* ===== 填充色 ===== */
+  --kd-color-fill-base: #FFFFFF;
+  --kd-color-fill-light: #F5F5F5;
+  --kd-color-fill-regular: #EEEEEE;
+  --kd-color-fill-heavy: #D4D4D4;
+
+  /* ===== 状态层 ===== */
+  --kd-color-state-hover: rgba(0,0,0,0.04);
+  --kd-color-state-pressed: rgba(0,0,0,0.08);
+  --kd-color-state-pressed-public: rgba(10,108,255,0.08);
+
+  /* ===== 背景层级 ===== */
+  --kd-color-background-base: #F0F0F0;
+  --kd-color-background-plate: #F5F5F5;
+  --kd-color-background-middle: #FFFFFF;
+  --kd-color-background-bottom: #FFFFFF;
+
+  /* ===== 字号 ===== */
+  --kd-font-size-xs: 10px;
+  --kd-font-size-small: 12px;
+  --kd-font-size-sub-base: 13px;
+  --kd-font-size-base: 14px;
+  --kd-font-size-middle: 16px;
+  --kd-font-size-large: 18px;
+  --kd-font-size-xl: 20px;
+  --kd-font-size-xxl: 24px;
+
+  /* ===== 字重 ===== */
+  --kd-font-weight-regular: 400;
+  --kd-font-weight-bold: 600;
+
+  /* ===== 圆角 ===== */
+  --kd-radius-xs: 2px;
+  --kd-radius-sm: 4px;
+  --kd-radius-md: 6px;
+  --kd-radius-lg: 8px;
+  --kd-radius-xl: 12px;
+  --kd-radius-full: 999px;
+
+  /* ===== 阴影 ===== */
+  --kd-shadow-sm: 0 1px 4px rgba(26,26,26,.10);
+  --kd-shadow-md: 0 1px 4px rgba(26,26,26,.14);
+  --kd-shadow-lg: 0 12px 32px rgba(26,26,26,.08);
+  --kd-shadow-xl: 0 32px 48px rgba(26,26,26,.20);
+  --kd-shadow-glow-blue: 0 0 0 2px rgba(10,108,255,.20);
+  --kd-shadow-glow-red: 0 0 0 2px rgba(225,47,60,.20);
+
+  /* ===== 动效 ===== */
+  --kd-time-fast: 120ms;
+  --kd-time-normal: 240ms;
+  --kd-easing-ease: cubic-bezier(.25,.10,.25,1.00);
+
+  /* ===== 禁用 ===== */
+  --kd-opacity-disabled: 0.4;
+
+  /* ===== 字体 ===== */
+  --kd-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
