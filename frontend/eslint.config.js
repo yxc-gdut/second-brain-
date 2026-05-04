@@ -33,7 +33,7 @@ export default [
     },
     plugins: { '@typescript-eslint': tseslint },
     rules: {
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     },
   },
@@ -87,8 +87,8 @@ export default [
   prettier,
   {
     rules: {
-      'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-      'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+      'no-console': 'warn',
+      'no-debugger': 'warn',
       'no-var': 'error',
       'prefer-const': 'error',
       'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],

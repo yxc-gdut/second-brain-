@@ -1,5 +1,29 @@
 # 更新日志
 
+## 2026-05-04（质量走廊）
+- ✅ **Gate 1：AI 编码规则增强**
+  - CLAUDE.md 新增组件开发模板、API 调用规范、状态管理规范、错误处理规范
+  - Cursor Rules 增强安全红线、性能规范、禁止模式清单
+  - Cursor Rules 增强前端 E2E 测试规范、KDesign Token 规范、组件拆分原则
+- ✅ **Gate 2：Pre-commit Hook 完善**
+  - lint-staged 配置（提交时自动 eslint + prettier）
+  - ESLint 加强：no-explicit-any → error、no-console → warn
+  - 移除 Settings.vue 中的 any 类型
+- ✅ **Gate 3：CI 增强**
+  - ci.yml 新增 concurrency（同 PR 只跑最后一次）+ permissions 限制
+  - 新增 e2e job（Playwright E2E 测试，含报告上传）
+  - 新增 PULL_REQUEST_TEMPLATE.md
+- ✅ **Gate 4：Vitest 单元测试**
+  - 安装 vitest + @vue/test-utils + jsdom
+  - 新增工具函数：validation.ts、format.ts、extractJSON.ts
+  - 72 个单元测试全部通过
+- ✅ **Gate 5：E2E 回归保护**
+  - Playwright E2E 框架（Chromium 移动端 375x812）
+  - 10 个 E2E 用例覆盖核心用户路径，全部通过
+  - AI Review Bot（scripts/ai-review.mjs）- GitHub PR webhook 审查服务
+  - PM2 配置（ecosystem.config.cjs）
+  - 服务器已部署，端口 3457
+
 ## 2026-05-04
 - ✅ **设计系统迁移：Apple Design → KDesign**
   - 新增 `kdesign-tokens.css` 全局设计变量（颜色、字号、字重、圆角、阴影、动效等）

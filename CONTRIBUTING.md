@@ -67,6 +67,24 @@ npm run type-check  # 检查 TypeScript 类型
 npm run build    # 验证构建
 ```
 
+### E2E 测试要求
+
+修改了页面或组件后，需要补充对应的 E2E 测试用例。
+
+**如何补充**：
+1. 在 Cursor Chat 中描述你的改动
+2. 让 AI 生成对应的 E2E 用例草稿
+3. 确认用例是否覆盖了你的需求（不需要看代码，看用例描述即可）
+4. AI 会将用例写入 `e2e/tests/` 目录
+
+**运行 E2E 测试**：
+```bash
+# 项目根目录
+npm run test:e2e
+```
+
+**CI 会自动检查**：PR 提交后，CI 会跑所有 E2E 用例，AI Review Bot 会检查用例是否覆盖了你的改动。
+
 ---
 
 ## 环境要求

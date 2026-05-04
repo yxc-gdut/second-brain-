@@ -1,0 +1,26 @@
+{
+  "name": "second-brain",
+  "version": "1.0.0",
+  "description": "个人知识管理系统，帮助用户快速记录阅读中的关键信息，自动归类整理。",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yxc-gdut/second-brain-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yxc-gdut/second-brain-/issues"
+  },
+  "homepage": "https://github.com/yxc-gdut/second-brain-#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
+  }
+}

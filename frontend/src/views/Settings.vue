@@ -123,8 +123,8 @@ const stats = ref({ work: 0, personal: 0, tags: 0 })
 onMounted(async () => {
   try {
     const notes = await getNotes()
-    stats.value.work = notes.filter((n: any) => n.category === 'work').length
-    stats.value.personal = notes.filter((n: any) => n.category === 'personal').length
+    stats.value.work = notes.filter((n) => n.category === 'work').length
+    stats.value.personal = notes.filter((n) => n.category === 'personal').length
   } catch (err) {
     console.error('加载统计失败:', err)
   }

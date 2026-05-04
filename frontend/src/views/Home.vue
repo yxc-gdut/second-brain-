@@ -46,7 +46,7 @@
         <!-- Loading State -->
         <div v-if="loading" class="loading-state">
           <div class="loading-grid">
-            <div class="skeleton-card" v-for="i in 3" :key="i">
+            <div v-for="i in 3" :key="i" class="skeleton-card">
               <div class="skeleton-title"></div>
               <div class="skeleton-line skeleton-line-short"></div>
               <div class="skeleton-meta">

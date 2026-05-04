@@ -1,0 +1,16 @@
+module.exports = {
+  apps: [
+    {
+      name: 'ai-review-bot',
+      script: 'scripts/ai-review.mjs',
+      cwd: '/root/.openclaw/workspace/second-brain',
+      env: {
+        NODE_ENV: 'production',
+        PORT: 3457,
+        GITHUB_TOKEN: ''<YOUR_GITHUB_TOKEN_HERE>',
+        REPO_OWNER: 'yxc-gdut',
+        REPO_NAME: 'second-brain-',
+      },
+    },
+  ],
+}

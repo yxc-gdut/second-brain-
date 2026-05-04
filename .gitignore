@@ -42,3 +42,8 @@ uploads/
 coverage/
 .nyc_output/
 push-retry.log
+
+e2e/results/
+playwright-report/
+test-results/
+scripts/ecosystem.config.cjs
